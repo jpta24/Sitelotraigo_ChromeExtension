@@ -1,0 +1,115 @@
+.resNS {
+    width: 95%;
+    height: auto;
+    padding: 5px;
+    margin: auto;
+    border: 7px solid #1A45AD;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+.logo {
+    width: 15%;
+    border-radius:2px;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    -ms-border-radius:2px;
+    -o-border-radius:2px;
+}
+
+.logoIMG {
+    width: 30px;
+    height: 30px;
+    border-radius:2px;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    -ms-border-radius:2px;
+    -o-border-radius:2px;
+}
+
+.information {
+    width: 30px;
+    height: 30px;
+    border-radius:2px;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    -ms-border-radius:2px;
+    -o-border-radius:2px;
+}
+
+
+.formEnvio {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 65%;
+    margin: auto;
+    padding-right: 5px;
+}
+
+.costo {
+    width:30%;
+    height: auto;
+    margin: auto;
+    font-size: 17px;
+    font-weight: bold;
+    font-family: "Amazon Ember", Arial,sans-serif;
+    text-align: center;
+}
+
+.masInfo {
+    width: 95%;
+    height: auto;
+    padding: 5px;
+    margin: 2px auto;
+    border: 7px solid #4162ad;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    display: none;
+    /* display: flex; */
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.tituloMasInfo{
+    text-align: center;
+    font-family: "Amazon Ember", Arial,sans-serif;
+}
+
+.pFinal{
+    text-align: center;
+    font-size: 8.5px;
+    font-family: "Amazon Ember", Arial,sans-serif;
+}
+
+table {
+    table-layout: fixed;
+    width: 200px;
+    margin: 15px;
+}
+  
+th,
+td {
+width: 50px;
+overflow: hidden;
+}
+
+.colCentro {
+    text-align: center;
+}
+
+.tf3 {
+    font-size: 17px;    
+    font-family: "Amazon Ember", Arial,sans-serif;    
+    font-weight: bold;
+}
