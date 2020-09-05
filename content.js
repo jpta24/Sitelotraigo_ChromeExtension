@@ -4,15 +4,20 @@ var item = {
     nombre: "",
     asin: "",
     precio: "",
+    precioxCant: "",
     prime: "",
     disponibilidad: "",
+    cantidad: 1,
     medidas: {
         largo: "",
         ancho: "",
         prof: "",
         peso: "", 
         volumen: "", 
-        voluMetrico: "",  
+        voluMetrico: "",
+        pesoxCant: "",
+        volxCant: "",
+        volMetxCant: ""  
     },
     precVenta: "",
     costoEnvio: {
@@ -30,7 +35,8 @@ var item = {
         impML: "",
         envioInterno: "2.57",
         costoMLFinal: "",
-    }
+    },
+    valAgrand: 0
     
 
 }
@@ -62,6 +68,28 @@ for (i = 0; i < asinX.length; i++) {
 }
 
     item.asin = asin
+
+
+//------------------------VARIACIONES DEL PRODUCTO--------------------------
+
+var variaciones = $('li');
+    cantVariaciones = [];
+var i;
+    for (i = 0; i < variaciones.length; i++) {
+        varID = variaciones[i].getAttribute("id");
+        if(varID !== null){
+           if(varID.search("size_name") !== -1) {
+            cantVariaciones.push(i);  
+        }
+       
+        }
+            
+        } 
+
+console.log(cantVariaciones);
+
+
+//------------------------DISPONIBILIDAD-------------------------
 
 var disp = $('#availability').text(); 
 
@@ -346,112 +374,128 @@ console.log("hello");
     uniPeso0 = "S/Inf";
 };
 
-/*  ----------------------------RESUMEN ------------------------------------------ */
+/*  ----------------------------CALCULOS ------------------------------------------ */
 
+   // volumen 
 
+   item.valAgrand = 0;
 
+   function funcionVolumen (agrandamiento) {
 
-/* var resumen = item.nombre + 'Precio: ' + item.precio + ' \nProduct Dimensions: ' + ProdDim + ' \nASIN: ' + item.asin + ' \nDisponiblidad: ' + item.disponibilidad + " / " + detTipo0 + " / " + tipoMed0 + ": " + medNum + " " + uniMedida0 + " / " + tipoPeso0 + ": " + pesoNum + " " + uniPeso0; */
+    calculoVolumen = (item.medidas.largo*1 + agrandamiento) * (item.medidas.ancho*1 + agrandamiento) * (item.medidas.prof*1 + agrandamiento);
 
+    calculoVoluMetrico = calculoVolumen / 166;
 
-// Costos de Envio
+    item.medidas.volumen = calculoVolumen.toFixed(2);
 
-    // Conversion de medidas a inches
+    item.medidas.calculoVoluMetrico = calculoVoluMetrico.toFixed(2);
 
-if ( uniMedida0 == uniMedida1[1] ) {
-    item.medidas.largo /= 2.54;
-    item.medidas.ancho /= 2.54;
-    item.medidas.prof /= 2.54;
-} else if ( uniMedida0 == uniMedida1[2] ) {
-    item.medidas.largo /= 25.4;
-    item.medidas.ancho /= 25.4;
-    item.medidas.prof /= 25.4;
-}else if ( uniMedida0 == uniMedida1[4] ) {
-    item.medidas.largo /= 0.0254;
-    item.medidas.ancho /= 0.0254;
-    item.medidas.prof /= 0.0254;
+    item.medidas.volxCant = calculoVolumen * item.cantidad;
+
+    item.medidas.calculoVoluMetrico = calculoVoluMetrico.toFixed(2);
+
+    item.medidas.volMetxCant = calculoVoluMetrico * item.cantidad; 
 };
 
-// volumen 
+ // volumen
+ funcionVolumen(0);
 
-calculoVolumen = item.medidas.largo * item.medidas.ancho * item.medidas.prof;
+function calculosIniciales(){
+    // Costos de Envio
 
-calculoVoluMetrico = calculoVolumen / 166;
+        // Conversion de medidas a inches
 
-item.medidas.volumen = calculoVolumen.toFixed(2);
+    if ( uniMedida0 == uniMedida1[1] ) {
+        item.medidas.largo /= 2.54;
+        item.medidas.ancho /= 2.54;
+        item.medidas.prof /= 2.54;
+    } else if ( uniMedida0 == uniMedida1[2] ) {
+        item.medidas.largo /= 25.4;
+        item.medidas.ancho /= 25.4;
+        item.medidas.prof /= 25.4;
+    }else if ( uniMedida0 == uniMedida1[4] ) {
+        item.medidas.largo /= 0.0254;
+        item.medidas.ancho /= 0.0254;
+        item.medidas.prof /= 0.0254;
+    };
 
-item.medidas.calculoVoluMetrico = calculoVoluMetrico.toFixed(2);
+ 
+    // Conversion de peso a libras
 
-// Conversion de peso a libras
+    if ( uniPeso0 == uniPeso1[0] || uniPeso0 == uniPeso1[2] || uniPeso0 == uniPeso1[3]) {
+    item.medidas.peso *= 0.0625
+    } else if ( uniPeso0 == uniPeso1[6] || uniPeso0 == uniPeso1[7] ) {
+        item.medidas.peso *= 2.20462
+    }else if ( uniPeso0 == uniPeso1[6] || uniPeso0 == uniPeso1[7] ) {
+        item.medidas.peso *= 0.00220462
+    };
 
-if ( uniPeso0 == uniPeso1[0] || uniPeso0 == uniPeso1[2] || uniPeso0 == uniPeso1[3]) {
-   item.medidas.peso *= 0.0625
-} else if ( uniPeso0 == uniPeso1[6] || uniPeso0 == uniPeso1[7] ) {
-    item.medidas.peso *= 2.20462
-}else if ( uniPeso0 == uniPeso1[6] || uniPeso0 == uniPeso1[7] ) {
-    item.medidas.peso *= 0.00220462
+
+
+    // (1) costo por peso evaluando el minimo
+
+    item.medidas.pesoxCant = item.medidas.peso * item.cantidad;
+
+    if (item.medidas.pesoxCant < 10 ) {
+        item.costoEnvio.flete = 10 * item.costoEnvio.precLibra;
+    } else {
+        item.costoEnvio.flete = item.medidas.pesoxCant * item.costoEnvio.precLibra
+    }
+
+    //  (1.1) costo libra addicional por volumen
+
+    if (item.medidas.volMetxCant < 10 ) {
+        item.costoEnvio.fleteAdicional = 0;
+    } else if (item.medidas.volMetxCant > item.medidas.pesoxCant) {
+        item.costoEnvio.fleteAdicional = ((item.medidas.volMetxCant) - item.medidas.pesoxCant) * item.costoEnvio.precLibraAdicional;
+    } else {
+        item.costoEnvio.fleteAdicional = 0;
+    }
+
+    // (2) Impuesto
+
+    item.precioxCant = item.precio * item.cantidad;
+
+    if (item.precioxCant*0.6 < 200 ) {
+        item.costoEnvio.impuesto = 0;
+    } else {
+        item.costoEnvio.impuesto = item.precioxCant * 0.6 * item.costoEnvio.porcentImpuesto;
+    }
+
+    // Costo Final
+
+    costoEnvioBruto = item.costoEnvio.flete*1 + item.costoEnvio.fleteAdicional*1 + item.costoEnvio.impuesto*1 + item.costoEnvio.seguro*1;
+
+    item.costoEnvio.costoEnvFinal = costoEnvioBruto.toFixed(2) ;
+
+
+    // Costos ML
+
+    item.costosML.comML = item.precio * 2.2 * 0.18;
+
+    item.costosML.impML = item.precio * 2.2 * 0.04;
+
+    costoFinalBruto = item.costosML.impML*1 + item.costosML.comML*1 + item.costosML.envioInterno*1;
+    item.costosML.costoMLFinal = costoFinalBruto.toFixed(2);
+
+
+    gastosFinales = item.precio*1 + item.costoEnvio.costoEnvFinal*1 + item.costosML.costoMLFinal*1;
+    precioVentaBruto = gastosFinales * 1.2;
+
+    item.costosML.comML = precioVentaBruto * 0.18;
+
+    item.costosML.impML = precioVentaBruto * 0.04;
+
+    gastosFinales = item.precio*1 + item.costoEnvio.costoEnvFinal*1 + item.costosML.costoMLFinal*1;
+    precioVentaBruto = gastosFinales * 1.2;
+
+    item.precVenta = precioVentaBruto.toFixed(2);
+
+    item.ganancia = precioVentaBruto*1 - gastosFinales;
+
 };
 
-
-
-// (1) costo por peso evaluando el minimo
-
-if (item.medidas.peso < 10 ) {
-    item.costoEnvio.flete = 10 * item.costoEnvio.precLibra;
-} else {
-    item.costoEnvio.flete = item.medidas.peso * item.costoEnvio.precLibra
-}
-
-//  (1.1) costo libra addicional por volumen
-
-if (item.medidas.volumen / 166 < 10 ) {
-    item.costoEnvio.fleteAdicional = 0;
-} else if (item.medidas.volumen / 166 > item.medidas.peso) {
-    item.costoEnvio.fleteAdicional = ((item.medidas.volumen / 166) - item.medidas.peso) * item.costoEnvio.precLibraAdicional;
-} else {
-    item.costoEnvio.fleteAdicional = 0;
-}
-
-// (2) Impuesto
-
-if (item.precio*0.6 < 200 ) {
-    item.costoEnvio.impuesto = 0;
-} else {
-    item.costoEnvio.impuesto = item.precio * 0.6 * item.costoEnvio.porcentImpuesto;
-}
-
-// Costo Final
-
-costoEnvioBruto = item.costoEnvio.flete*1 + item.costoEnvio.fleteAdicional*1 + item.costoEnvio.impuesto*1 + item.costoEnvio.seguro*1;
-
-item.costoEnvio.costoEnvFinal = costoEnvioBruto.toFixed(2) ;
-
-
-console.log(item);
-
-// Costos ML
-
-item.costosML.comML = item.precio * 2.2 * 0.18;
-
-item.costosML.impML = item.precio * 2.2 * 0.04;
-
-costoFinalBruto = item.costosML.impML*1 + item.costosML.comML*1 + item.costosML.envioInterno*1;
-item.costosML.costoMLFinal = costoFinalBruto.toFixed(2);
-
-
-gastosFinales = item.precio*1 + item.costoEnvio.costoEnvFinal*1 + item.costosML.costoMLFinal*1;
-precioVentaBruto = gastosFinales * 1.2;
-
-item.costosML.comML = precioVentaBruto * 0.18;
-
-item.costosML.impML = precioVentaBruto * 0.04;
-
-gastosFinales = item.precio*1 + item.costoEnvio.costoEnvFinal*1 + item.costosML.costoMLFinal*1;
-precioVentaBruto = gastosFinales * 1.2;
-
-item.precVenta = precioVentaBruto.toFixed(2);
-
-item.ganancia = precioVentaBruto*1 - gastosFinales;
+calculosIniciales();
 
 resumen2 = "Ganancia: $" + item.ganancia.toFixed(2) + " / Costo Envio: $" + item.costoEnvio.costoEnvFinal;
     
