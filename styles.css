@@ -114,3 +114,46 @@ overflow: hidden;
     font-family: "Amazon Ember", Arial,sans-serif;    
     font-weight: bold;
 }
+
+.shoppingCartResGral {
+    width: 600px;
+    height: auto;
+    padding: 5px;
+    margin: 3px;
+    border: 7px solid #1A45AD;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    position: fixed;
+    display: none;
+    right: 2px;
+    top: 135px;
+    /* display: flex; */
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+.masIcon {
+    width: 30px;
+    height: 30px;
+    position: fixed;
+    right: 15px;
+    top: 148px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    opacity: 0.6;
+}
+
+.trashcan {
+    width: 20px;
+    height: 20px;
+    margin: auto;
+
+}

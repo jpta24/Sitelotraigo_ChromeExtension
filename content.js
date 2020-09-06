@@ -9,6 +9,7 @@ var item = {
     disponibilidad: "",
     cantidad: 1,
     medidas: {
+        dimensiones: "",
         largo: "",
         ancho: "",
         prof: "",
@@ -70,23 +71,7 @@ for (i = 0; i < asinX.length; i++) {
     item.asin = asin
 
 
-//------------------------VARIACIONES DEL PRODUCTO--------------------------
 
-var variaciones = $('li');
-    cantVariaciones = [];
-var i;
-    for (i = 0; i < variaciones.length; i++) {
-        varID = variaciones[i].getAttribute("id");
-        if(varID !== null){
-           if(varID.search("size_name") !== -1) {
-            cantVariaciones.push(i);  
-        }
-       
-        }
-            
-        } 
-
-console.log(cantVariaciones);
 
 
 //------------------------DISPONIBILIDAD-------------------------
@@ -197,6 +182,7 @@ var j;
         if ( uniMedida.search(uniMedida1[i]) !== -1 ) {
             uniMedida0 = uniMedida1[i];
             medNum = uniMedida.substring(1, uniMedida.search(uniMedida0)-1);
+            item.medidas.dimensiones = medNum;
             var indices = [];
             var j;
             for(var j=0; i < medNum.length; i++) {
@@ -323,7 +309,6 @@ if ( detTipo0 == detTipo1[0] ) {
  
 
  if ( detTipo0 == detTipo1[0] && postm1 != null ) {
-console.log("hello");
     var uniPeso = document.getElementsByClassName("a-size-base")[postm1].nextElementSibling.innerHTML;
 
     var i;

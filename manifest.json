@@ -23,7 +23,11 @@
             "img/SC1.png",
             "img/SC2.png",
             "img/noShippingBox.png",
-            "img/ShippingBox.png"
+            "img/ShippingBox.png",
+            "img/mas.png",
+            "img/menos.png",            
+            "img/refresh.png",
+            "img/trashcan.png"
           ],
 
     "content_scripts": [

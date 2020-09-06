@@ -13,22 +13,23 @@ chrome.runtime.onMessage.addListener(function(response, tab, sendResponse) {
     var i;
     var repetido = [];
 
-    for (i = 0; i < listadoProductos.length; i++) {
-        if (listadoProductos[i].asin === nuevoProducto.asin) {
-            repetido.push(i);
+    if (nuevoProducto != "" ) {
+
+        for (i = 0; i < listadoProductos.length; i++) {
+            if (listadoProductos[i].asin === nuevoProducto.asin) {
+                repetido.push(i);
+            };
         };
-    };
-    console.log(repetido.length);
-    if (repetido.length === 0) {
-        listadoProductos.push(nuevoProducto);
-        console.log("Item Agregado");
-        console.log(listadoProductos);
-    } else {
-        console.log("Item repetido");
-        console.log(listadoProductos);
-    };
-    
+        console.log(repetido.length);
+        if (repetido.length === 0) {
+            listadoProductos.push(nuevoProducto);
+            console.log("Item Agregado");
+            console.log(listadoProductos);
+        } else {
+            console.log("Item repetido");
+            console.log(listadoProductos);
+        };
+                
+    }
     EnvioActualizacionProductos();
-    
-    
 });
