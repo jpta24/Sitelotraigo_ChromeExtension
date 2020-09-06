@@ -47,9 +47,9 @@
       $(this).css("opacity", "1");
     }).click(function(){
       console.log(listadoProductos);
-      
+      chrome.runtime.sendMessage(item);
       if (listadoProductos == ""){
-        chrome.runtime.sendMessage(item);
+        
       } 
     
       if ($("#shoppingCartResGral").attr("display") == undefined || $("#shoppingCartResGral").attr("display") == "none") {
@@ -167,13 +167,23 @@
 
   calculosTotales();
 
+//--------------------------------------------------------------------------------
+//----------------------------RECIBIR RESPUESTA -----------------------------------
+//--------------------------------------------------------------------------------
+
   chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
       listadoProductos = request;
-      var i;
-      for (i = 0; i < listadoProductos.length; i++) {
-            $('#tabProdVarios').append('<tr><td class="colCentro" id="tda1">1</td><td class="colCentro" id="tda11">2</td><td class="colCentro" id="tda12">3</td></td><td class="colCentro" id="tda2">4</td><td class="colCentro" id="tda3">5</td><td class="colCentro" id="tda3">6</td><td class="colCentro" id="tda3">7</td><td class="colCentro" id="tda3">8</td></tr>');
-      }
+      var rowCount = $('#tabProdVarios tr').length;
+     
+      if (rowCount-1 !== listadoProductos.length){
+        $('#tabProdVarios tr').remove();
+        var i;
+        for (i = 0; i < listadoProductos.length; i++) {
+          $('#tabProdVarios').append('<tr><td class="colCentro" id="tda1">1</td><td class="colCentro" id="tda11">2</td><td class="colCentro" id="tda12">3</td></td><td class="colCentro" id="tda2">4</td><td class="colCentro" id="tda3">5</td><td class="colCentro" id="tda3">6</td><td class="colCentro" id="tda3">7</td><td class="colCentro" id="tda3">8</td></tr>');
+        }
+      };
+      
 
       console.log(listadoProductos);
     });
@@ -207,6 +217,8 @@
     },function(){
       $(this).css("opacity", "0.6");
     }).click(function(){
+
+      chrome.runtime.sendMessage("");
           
       if ($('#masIcon').attr("src") === "chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/mas.png") {
         mostrarShippingCart()
