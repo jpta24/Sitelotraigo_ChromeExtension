@@ -116,7 +116,8 @@ overflow: hidden;
 }
 
 .shoppingCartResGral {
-    width: 600px;
+    width: 607px;
+    max-height: 550px;
     height: auto;
     padding: 5px;
     margin: 3px;
@@ -129,19 +130,22 @@ overflow: hidden;
     -o-border-radius: 10px;
     position: fixed;
     display: none;
-    right: 2px;
-    top: 135px;
+    right: 100px;
+    top: 10px;
     /* display: flex; */
     flex-flow: row nowrap;
     align-items: center;
+    overflow: auto;
+    overflow-x: hidden;
+    z-index: 1000;
 }
 
 .masIcon {
     width: 30px;
     height: 30px;
     position: fixed;
-    right: 15px;
-    top: 148px;
+    right: 112px;
+    top: 22px;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 50%;
     -webkit-border-radius: 50%;
@@ -149,11 +153,15 @@ overflow: hidden;
     -ms-border-radius: 50%;
     -o-border-radius: 50%;
     opacity: 0.6;
+    z-index: 1000;
 }
 
 .trashcan {
     width: 20px;
     height: 20px;
     margin: auto;
+}
 
+.separacion {
+    height: 20px;
 }

@@ -1,4 +1,10 @@
  $(document).ready(function(){
+  var msj = {
+    action: "",
+    item: "",
+    listadoProductos: []
+  }
+
   var listadoProductos = [];
 
   var divPrice = $('#desktop_unifiedPrice');
@@ -46,11 +52,12 @@
     },function(){
       $(this).css("opacity", "1");
     }).click(function(){
+      msj.action = "addItem"
+      msj.item = item;
+      
       console.log(listadoProductos);
-      chrome.runtime.sendMessage(item);
-      if (listadoProductos == ""){
-        
-      } 
+      chrome.runtime.sendMessage(msj);
+      
     
       if ($("#shoppingCartResGral").attr("display") == undefined || $("#shoppingCartResGral").attr("display") == "none") {
         mostrarShippingCart();
@@ -69,21 +76,17 @@
         
     if ($('#shippingCart').attr("src") === "chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/noShippingBox.png") {
       $('#shippingCart').attr("src", "chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/ShippingBox.png");
-      item.valAgrand = 3;
-      funcionVolumen(item.valAgrand);
-
-      calculosTotales();
+      item.medidas.shippingBox = true;
       
-      $('#tda2').text(item.medidas.volMetxCant.toFixed(2));
+      $('#tda2').text(item.medidas.volMetAgrandxCant.toFixed(2));
+      calculosTotales();
 
     } else {
       $('#shippingCart').attr("src", "chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/noShippingBox.png");
-      item.valAgrand = 0;
-      funcionVolumen(item.valAgrand);
-
-      calculosTotales();
+      item.medidas.shippingBox = false;
       
       $('#tda2').text(item.medidas.volMetxCant.toFixed(2));
+      calculosTotales();
     }
   });
 
@@ -93,8 +96,6 @@
 
   $('#cantidad').on("change", function(){
     item.cantidad = document.getElementById('cantidad').value;
-
-    funcionVolumen(item.valAgrand);
 
     calculosTotales();
                       
@@ -113,11 +114,9 @@
 
   function calculosTotales() {
     calculosIniciales();
- 
+
     $('#tda1').text(medNum);
-    $('#tda2').text(item.medidas.volMetxCant.toFixed(2));
     $('#tda3').text(item.medidas.pesoxCant.toFixed(2));
-    
     if (item.medidas.pesoxCant < 10 ) {
       $('#tb2').text('10 (min)');
     } else {
@@ -134,33 +133,52 @@
       $('#td3').text("$" + item.costoEnvio.impuesto.toFixed(2));
     }
     
-    if (item.medidas.volMetxCant*1 < 10 ) {
-      $('#te2').text("0");
-      $('#te3').text("$0");
-      item.costoEnvio.fleteAdicional = 0;
+    if (item.medidas.shippingBox === false) {
+      $('#tda2').text(item.medidas.volMetxCant.toFixed(2));
+      if (item.medidas.volMetxCant*1 < 10 ) {
+        $('#te2').text("0");
+        $('#te3').text("$0");
+  
+      } else if (item.medidas.volMetxCant*1 > item.medidas.pesoxCant) {
+        volumenArreglado = (item.medidas.volMetxCant*1) - item.medidas.pesoxCant;
+        item.costoEnvio.fleteAdicional = ((item.medidas.volMetxCant) - item.medidas.pesoxCant) * item.costoEnvio.precLibraAdicional;
+        $('#te2').text(volumenArreglado.toFixed(2));
+        $('#te3').text("$" + item.costoEnvio.fleteAdicional.toFixed(2));
+      
+      } else {
+        $('#te2').text("0");
+        $('#te3').text("$0");
+        item.costoEnvio.fleteAdicional = 0;
+      };
 
-    } else if (item.medidas.volMetxCant*1 > item.medidas.peso) {
-      volumenArreglado = (item.medidas.volMetxCant*1) - item.medidas.peso;
-      item.costoEnvio.fleteAdicional = ((item.medidas.volMetxCant) - item.medidas.peso) * item.costoEnvio.precLibraAdicional;
-      $('#te2').text(volumenArreglado.toFixed(2));
-      $('#te3').text("$" + item.costoEnvio.fleteAdicional.toFixed(2));
-    
+      $('#costo').text(" $" + item.costoEnvio.costoEnvFinal.toFixed(2));
+
+      $('#tf3').text("$" + item.costoEnvio.costoEnvFinal.toFixed(2));
+      
     } else {
-      $('#te2').text("0");
-      $('#te3').text("$0");
-      item.costoEnvio.fleteAdicional = 0;
-    };
+      $('#tda2').text(item.medidas.volMetAgrandxCant.toFixed(2));
+      if (item.medidas.volMetAgrandxCant*1 < 10 ) {
+        $('#te2').text("0");
+        $('#te3').text("$0");
+        item.costoEnvio.fleteAdicional = 0;
+  
+      } else if (item.medidas.volMetAgrandxCant*1 > item.medidas.pesoxCant*1) {
+        volumenArreglado = (item.medidas.volMetAgrandxCant*1) - item.medidas.pesoxCant;
+        item.costoEnvio.fleteAdicional = ((item.medidas.volMetAgrandxCant) - item.medidas.pesoxCant) * item.costoEnvio.precLibraAdicional;
+        $('#te2').text(volumenArreglado.toFixed(2));
+        $('#te3').text("$" + item.costoEnvio.fleteAdicional.toFixed(2));
+      
+      } else {
+        $('#te2').text("0");
+        $('#te3').text("$0");
+        item.costoEnvio.fleteAdicional = 0;
+      };
+      
+      $('#costo').text(" $" + item.costoEnvio.costoEnvFinalConSB.toFixed(2));
+
+      $('#tf3').text("$" + item.costoEnvio.costoEnvFinalConSB.toFixed(2));
+    }
     
-    // Costo Final
-
-    costoEnvioBruto = item.costoEnvio.flete*1 + item.costoEnvio.fleteAdicional*1 + item.costoEnvio.impuesto*1 + item.costoEnvio.seguro*1;
-
-    item.costoEnvio.costoEnvFinal = costoEnvioBruto.toFixed(2);
-
-    $('#costo').text(" $" + item.costoEnvio.costoEnvFinal);
-
-    $('#tf3').text("$" + item.costoEnvio.costoEnvFinal);
-
     console.log(item);
   };
 //--------------------------------------------------------------------------------
@@ -173,20 +191,46 @@
 
   chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-      listadoProductos = request;
-      var rowCount = $('#tabProdVarios tr').length;
-     
-      if (rowCount-1 !== listadoProductos.length){
-        $('#tabProdVarios tr').remove();
+      msj = request;
+      function actualizarTabla(){
+        $('#tabProdVarios tr').remove(".tdarow");
         var i;
         for (i = 0; i < listadoProductos.length; i++) {
-          $('#tabProdVarios').append('<tr><td class="colCentro" id="tda1">1</td><td class="colCentro" id="tda11">2</td><td class="colCentro" id="tda12">3</td></td><td class="colCentro" id="tda2">4</td><td class="colCentro" id="tda3">5</td><td class="colCentro" id="tda3">6</td><td class="colCentro" id="tda3">7</td><td class="colCentro" id="tda3">8</td></tr>');
+          nombreArreglado = listadoProductos[i].nombre.substr(8,10);
+          $('#tabProdVarios').append('<tr class ="tdarow"><td class="colCentro" id="tda'+i+'_1">'+nombreArreglado+'</td><td class="colCentro" id="tda'+i+'_2"><select name="cantidadVarios" id="cantidadVarios'+i+'"></td><td class="colCentro" id="tda'+i+'_3"><input type="checkbox" id="cb'+i+'" class="cbvpro"></td><td class="colCentro" id="tda'+i+'_4">$'+listadoProductos[i].precioxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_5">'+listadoProductos[i].medidas.pesoxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_6">'+listadoProductos[i].medidas.volumen.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_7">'+listadoProductos[i].medidas.volMetxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_8"><img width=15px height=15px class="delIcon" id="delIcon" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/menos.png"></td></tr>');
+          
+          $('#cantidadVarios'+i).html('<option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>');
+
+          $('#cantidadVarios'+i).val(listadoProductos[i].cantidad);
+
+          if ( listadoProductos[i].medidas.shippingBox === false ) {
+            $('#cb'+i).prop('checked', false);
+          } else {
+            $('#cb'+i).prop('checked', true);
+          }
         }
       };
-      
 
+      action1 = ["itemAdded", "productsDeleted", "mostrarSC", "AllSBchanged" ];
+
+      var i;
+        for (i = 0; i < action1.length; i++) {
+          if (msj.action === action1[i]){
+            listadoProductos = msj.listadoProductos;
+            actualizarTabla();
+            break
+          }
+        }
+
+     
+      
+      // ---------------------------------------------------------
+      console.log(msj.action);
       console.log(listadoProductos);
     });
+//----------------------------------------------------------------
+//----------------------------------------------------------------
+//----------------------------------------------------------------
  
 //----------------------------------SHOPPING CART----------------------------------
 
@@ -194,22 +238,45 @@
 
   $('body').append('<img class="masIcon" id="masIcon" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/mas.png">');
 
-  $('#shoppingCartResGral').append("<div><img class='logoIMG' src='chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/stlt2.jpg'><h3 class='tituloMasInfo'>Desglose de Varios Productos</h3></div>").append("<div id='medidasPesoVarios' class='medidasPeso'></div>").append("<div id='precioMedidasVarios' class='precioMedidas'></div>").append("<p class='pFinal'>Los precios son referenciales y serán confirmados al recibir la carga en nuestros depositos</p>");
+  $('#shoppingCartResGral').append("<div><img class='logoIMG' src='chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/stlt2.jpg'><h3 class='tituloMasInfo'>Desglose de Varios Productos</h3></div>").append("<div id='medidasPesoVarios' class='medidasPeso'></div>").append("<div class='separacion'></div>").append("<div id='precioMedidasVarios' class='precioMedidas'></div>").append("<p class='pFinal'>Los precios son referenciales y serán confirmados al recibir la carga en nuestros depositos</p>");
 
-  $('#medidasPesoVarios').append('<table id="tabProdVarios"><tr><th class="colCentro">Nombre</th><th class="colCentro">Precio</th><th class="colCentro">Dim. <br> (inches)</th><th class="colCentro">Cantidad</th><th class="colCentro" title="Estimación de la Caja de Envio" id="thSB"></th><th class="colCentro">Peso <br> (libras) </th><th class="colCentro">Peso<br>VolMetr.</th><th class="colCentro" title="Eliminar Todos" id="thElim"></th></tr></table>');
-
- /*  {<tr><td class="colCentro" id="tda1"></td><td class="colCentro" id="tda11"></td><td class="colCentro" id="tda12"></td></td><td class="colCentro" id="tda2"></td><td class="colCentro" id="tda3"></td></tr>} */
+  $('#medidasPesoVarios').append('<table id="tabProdVarios"><tr><th class="colCentro">Nombre</th><th class="colCentro">Cantidad</th><th class="colCentro" title="Estimación de la Caja de Envio" id="thSB"></th><th class="colCentro">Precio</th><th class="colCentro">Peso<br>(libras)</th><th class="colCentro">Volumen<br>(inches<sup>3</sup>)</th><th class="colCentro">Peso<br>VolMetr.</th><th class="colCentro" title="Eliminar Todos" id="thElim"></th></tr></table>');
 
   $('#precioMedidasVarios').append('<table><tr><th>Concepto</th><th class="colCentro">Unidad</th><th>Total</th></tr><tr><td  id="tb1">Flete $2.2</td><td class="colCentro" id="tb2"></td><td  id="tb3"></td></tr><tr><td  id="tc1">Seguro</td><td class="colCentro" id="tc2">$10.00</td><td  id="tc3">$10.00</td></tr><tr><td title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados" id="td1">Impuesto</td><td class="colCentro" id="td2" title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados"></td><td title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados" id="td3"></td></tr><tr><td  id="te1">Dif. Volumen $0.99</td><td class="colCentro" id="te2"></td><td  id="te3"></td></tr><tr><td></td><td class="tf3">TOTAL</td><td class="tf3" id="tf3"></td></tr></table>');
 
-  $('#thSB').html('<img class="logoIMG" id="shippingCart" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/ShippingBox.png">');
+  $('#thSB').html('<img class="logoIMG active" id="shippingCartVarios" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/ShippingBox.png">').click(function(){
+        
+    if ($('#shippingCartVarios').attr("class") == "logoIMG active") {
+      $('#shippingCartVarios').removeClass("active");
+      console.log(listadoProductos);
+      var i;
+        for (i = 0; i < listadoProductos.length; i++) {
+          listadoProductos[i].medidas.shippingBox = true;
+        }
+        console.log(listadoProductos);
+    } else {
+      $('#shippingCartVarios').addClass("active");
+      for (i = 0; i < listadoProductos.length; i++) {
+        listadoProductos[i].medidas.shippingBox = false;
+      }
+      msj.action = "changeAllSB";
+      msj.listadoProductos = listadoProductos;
+      chrome.runtime.sendMessage(msj);
+    }
+  });
 
-  $('#thElim').html('<img class="logoIMG trashcan" id="trashcan" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/trashcan.png">');
+  $('#thElim').html('<img class="logoIMG trashcan" id="trashcan" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/trashcan.png">').click(function(){
+
+    msj.action = "deleteAll"
+    chrome.runtime.sendMessage(msj);
+
+  });
 
   function mostrarShippingCart() {
     $('#masIcon').attr("src", "chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/menos.png");
         $("#shoppingCartResGral").attr("display", "flex");
         $("#shoppingCartResGral").slideToggle("slow");
+
   };
   
   $('#masIcon').hover(function(){
@@ -218,7 +285,8 @@
       $(this).css("opacity", "0.6");
     }).click(function(){
 
-      chrome.runtime.sendMessage("");
+      msj.action = "mostrarSC"
+      chrome.runtime.sendMessage(msj);
           
       if ($('#masIcon').attr("src") === "chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/mas.png") {
         mostrarShippingCart()

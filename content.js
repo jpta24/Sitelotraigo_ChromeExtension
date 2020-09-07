@@ -9,16 +9,23 @@ var item = {
     disponibilidad: "",
     cantidad: 1,
     medidas: {
+        shippingBox: false,
+        valAgrand: 10,
         dimensiones: "",
         largo: "",
         ancho: "",
         prof: "",
-        peso: "", 
+        peso: "",
+        pesoxCant: "", 
         volumen: "", 
         voluMetrico: "",
-        pesoxCant: "",
         volxCant: "",
-        volMetxCant: ""  
+        volMetxCant: "",
+        volAgrand: "",
+        voluMetricoAgrand: "",
+        volMetAgrandxCant: "",
+        volxCantAgrand: "",
+
     },
     precVenta: "",
     costoEnvio: {
@@ -26,10 +33,12 @@ var item = {
         porcentImpuesto: 0.3,
         precLibraAdicional: 0.99,
         flete : "",
-        fleteAdicional: "",
+        fleteAdicionalSinSB: "",
+        fleteAdicionalConSB: "",
         impuesto : "",
         seguro:  10, 
         costoEnvFinal : "",
+        costoEnvFinalConSB: "",
     },
     costosML: {
         comML: "",
@@ -37,9 +46,6 @@ var item = {
         envioInterno: "2.57",
         costoMLFinal: "",
     },
-    valAgrand: 0
-    
-
 }
 
 if( $('body').find('#priceblock_ourprice').length != 0 ) {
@@ -48,16 +54,16 @@ if( $('body').find('#priceblock_ourprice').length != 0 ) {
     precioTxt = $('#priceblock_saleprice').text();
 };
                 
-    item.precioBruto = precioTxt.substring(precioTxt.indexOf("$")+1);
+item.precioBruto = precioTxt.substring(precioTxt.indexOf("$")+1);
 
-    item.precio = parseFloat(item.precioBruto.replace(",",""));
+item.precio = parseFloat(item.precioBruto.replace(",",""));
 
 var nombre = $('#productTitle').text();
 
-    item.nombre = nombre;
+item.nombre = nombre;
 
 var asinX = $('.a-size-base'); 
-    textoAsinX = "\nASIN\n";
+textoAsinX = "\nASIN\n";
 var i;
 for (i = 0; i < asinX.length; i++) {
     if (asinX[i].innerHTML == textoAsinX) {
@@ -68,7 +74,7 @@ for (i = 0; i < asinX.length; i++) {
     }
 }
 
-    item.asin = asin
+item.asin = asin
 
 
 
@@ -78,26 +84,27 @@ for (i = 0; i < asinX.length; i++) {
 
 var disp = $('#availability').text(); 
 
-    item.disponibilidad = disp;
+item.disponibilidad = disp;
+
 // Variables para buscar elementos
 
 var ProdDim = "";
 
 
-    detTipo0 = "";
-    detTipo1 = ["prodDetails", "detail-bullets", "productOverview_feature_div"];
+detTipo0 = "";
+detTipo1 = ["prodDetails", "detail-bullets", "productOverview_feature_div"];
 
-    tipoMed0 = "";
-    tipoMed1 = ["\nProduct Dimensions\n", "\nPackage Dimensions\n", "Product Dimensions", "Package Dimensions", "Información de producto", "\nInformación de producto\n", "Item Dimensions  LxWxH", "\nItem Dimensions  LxWxH\n",  "Dimensiones del artículo Largo x Ancho x Altura", "\nDimensiones del artículo Largo x Ancho x Altura\n", "Dimensiones del producto", "\nDimensiones del producto\n", "Dimensiones del paquete", "\nDimensiones del paquete\n" ];
+tipoMed0 = "";
+tipoMed1 = ["\nProduct Dimensions\n", "\nPackage Dimensions\n", "Product Dimensions", "Package Dimensions", "Información de producto", "\nInformación de producto\n", "Item Dimensions  LxWxH", "\nItem Dimensions  LxWxH\n",  "Dimensiones del artículo Largo x Ancho x Altura", "\nDimensiones del artículo Largo x Ancho x Altura\n", "Dimensiones del producto", "\nDimensiones del producto\n", "Dimensiones del paquete", "\nDimensiones del paquete\n" ];
 
-    uniMedida0 = "";
-    uniMedida1 = ["inches", "cm" , "mm", "pulgadas", "m"];
+uniMedida0 = "";
+uniMedida1 = ["inches", "cm" , "mm", "pulgadas", "m"];
 
-    tipoPeso0 = "";
-    tipoPeso1 = ["\nItem Weight\n", "Shipping Weight", "Peso del producto", "\nPeso del producto\n" ];
+tipoPeso0 = "";
+tipoPeso1 = ["\nItem Weight\n", "Shipping Weight", "Peso del producto", "\nPeso del producto\n" ];
 
-    uniPeso0 = "";
-    uniPeso1 = ["ounces", "pounds", "Ounces", "Onzas", "lbs", "libras", "kg" , "kgs", "gr", "grs" ];
+uniPeso0 = "";
+uniPeso1 = ["ounces", "pounds", "Ounces", "Onzas", "lbs", "libras", "kg" , "kgs", "gr", "grs" ];
 
 
 
@@ -105,18 +112,18 @@ var ProdDim = "";
 var tipoDetalles = $('div');
 var i;
 var j;
-    for (i = 0; i < tipoDetalles.length; i++) {
-        for (j = 0; j < detTipo1.length; j++) {
-            if (detTipo1[j]  == tipoDetalles[i].getAttribute("id")) {
-                detTipo0 = detTipo1[j];
-                console.log("tipo de div: " + detTipo0);
-                break
-            } 
+for (i = 0; i < tipoDetalles.length; i++) {
+    for (j = 0; j < detTipo1.length; j++) {
+        if (detTipo1[j]  == tipoDetalles[i].getAttribute("id")) {
+            detTipo0 = detTipo1[j];
+            console.log("tipo de div: " + detTipo0);
             break
         } 
-    };
+        break
+    } 
+};
 
-    // Tipo de Detalles del Producto (Med)
+// Tipo de Detalles del Producto (Med)
 
  if ( detTipo0 == detTipo1[0]) {
     var x = $(".a-size-base");
@@ -359,36 +366,14 @@ if ( detTipo0 == detTipo1[0] ) {
     uniPeso0 = "S/Inf";
 };
 
-/*  ----------------------------CALCULOS ------------------------------------------ */
-
-   // volumen 
-
-   item.valAgrand = 0;
-
-   function funcionVolumen (agrandamiento) {
-
-    calculoVolumen = (item.medidas.largo*1 + agrandamiento) * (item.medidas.ancho*1 + agrandamiento) * (item.medidas.prof*1 + agrandamiento);
-
-    calculoVoluMetrico = calculoVolumen / 166;
-
-    item.medidas.volumen = calculoVolumen.toFixed(2);
-
-    item.medidas.calculoVoluMetrico = calculoVoluMetrico.toFixed(2);
-
-    item.medidas.volxCant = calculoVolumen * item.cantidad;
-
-    item.medidas.calculoVoluMetrico = calculoVoluMetrico.toFixed(2);
-
-    item.medidas.volMetxCant = calculoVoluMetrico * item.cantidad; 
-};
-
- // volumen
- funcionVolumen(0);
+//--------------------------------------------------------------------------------
+//----------------------------CALCULOS INICIALES ---------------------------------
+//--------------------------------------------------------------------------------
 
 function calculosIniciales(){
     // Costos de Envio
 
-        // Conversion de medidas a inches
+    // Conversion de medidas a inches
 
     if ( uniMedida0 == uniMedida1[1] ) {
         item.medidas.largo /= 2.54;
@@ -415,7 +400,25 @@ function calculosIniciales(){
         item.medidas.peso *= 0.00220462
     };
 
+      // volumen 
 
+    item.medidas.volumen = (item.medidas.largo*1) * (item.medidas.ancho*1) * (item.medidas.prof*1);
+
+    item.medidas.voluMetrico = item.medidas.volumen / 166;
+
+    item.medidas.volxCant = item.medidas.volumen * item.cantidad;
+
+    item.medidas.volMetxCant = item.medidas.voluMetrico * item.cantidad; 
+
+    item.medidas.volAgrand = (item.medidas.largo*1 + item.medidas.valAgrand) * (item.medidas.ancho*1 + item.medidas.valAgrand) * (item.medidas.prof*1 + item.medidas.valAgrand);
+
+    item.medidas.voluMetricoAgrand = item.medidas.volAgrand / 166;
+
+    item.medidas.volxCantAgrand = item.medidas.volAgrand * item.cantidad;
+
+    item.medidas.volMetAgrandxCant = item.medidas.voluMetricoAgrand * item.cantidad;
+
+    
 
     // (1) costo por peso evaluando el minimo
 
@@ -429,17 +432,28 @@ function calculosIniciales(){
 
     //  (1.1) costo libra addicional por volumen
 
+    
     if (item.medidas.volMetxCant < 10 ) {
-        item.costoEnvio.fleteAdicional = 0;
+        item.costoEnvio.fleteAdicionalSinSB = 0;
     } else if (item.medidas.volMetxCant > item.medidas.pesoxCant) {
-        item.costoEnvio.fleteAdicional = ((item.medidas.volMetxCant) - item.medidas.pesoxCant) * item.costoEnvio.precLibraAdicional;
+        item.costoEnvio.fleteAdicionalSinSB = ((item.medidas.volMetxCant) - item.medidas.pesoxCant) * item.costoEnvio.precLibraAdicional;
     } else {
-        item.costoEnvio.fleteAdicional = 0;
+        item.costoEnvio.fleteAdicionalSinSB = 0;
     }
 
+    if (item.medidas.volMetAgrandxCant < 10 ) {
+        item.costoEnvio.fleteAdicionalConSB = 0;
+    } else if (item.medidas.volMetAgrandxCant > item.medidas.pesoxCant) {
+        item.costoEnvio.fleteAdicionalConSB = ((item.medidas.volMetAgrandxCant) - item.medidas.pesoxCant) * item.costoEnvio.precLibraAdicional;
+    } else {
+        item.costoEnvio.fleteAdicionalConSB = 0;
+    }
+    
     // (2) Impuesto
-
+    
     item.precioxCant = item.precio * item.cantidad;
+    
+    
 
     if (item.precioxCant*0.6 < 200 ) {
         item.costoEnvio.impuesto = 0;
@@ -448,10 +462,10 @@ function calculosIniciales(){
     }
 
     // Costo Final
+    
+    item.costoEnvio.costoEnvFinal = item.costoEnvio.flete*1 + item.costoEnvio.fleteAdicionalSinSB*1 + item.costoEnvio.impuesto*1 + item.costoEnvio.seguro*1;
 
-    costoEnvioBruto = item.costoEnvio.flete*1 + item.costoEnvio.fleteAdicional*1 + item.costoEnvio.impuesto*1 + item.costoEnvio.seguro*1;
-
-    item.costoEnvio.costoEnvFinal = costoEnvioBruto.toFixed(2) ;
+    item.costoEnvio.costoEnvFinalConSB = item.costoEnvio.flete*1 + item.costoEnvio.fleteAdicionalConSB*1 + item.costoEnvio.impuesto*1 + item.costoEnvio.seguro*1; 
 
 
     // Costos ML
