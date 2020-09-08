@@ -74,7 +74,11 @@
 
   $('#medidasPeso').append('<table><tr><th class="colCentro">Dimensiones (pulgadas)</th><th class="colCentro" title="Estimación de la Caja de Envio">Caja de Envio</th><th class="colCentro">Cantidad</th><th class="colCentro">Peso <br> Volumétrico</th><th class="colCentro">Peso <br> (libras) </th></tr><tr><td class="colCentro" id="tda1"></td><td class="colCentro" id="tda11"><td class="colCentro" id="tda12"></td></td><td class="colCentro" id="tda2"></td><td class="colCentro" id="tda3"></td></tr></table>');
       
-  $('#tda11').html('<img class="logoIMG" id="shippingCart" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/noShippingBox.png">').click(function(){
+  $('#tda11').html('<img class="logoIMG" id="shippingCart" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/noShippingBox.png">').hover(function(){
+    $(this).css("opacity", "0.6");
+    },function(){
+      $(this).css("opacity", "1");
+    }).click(function(){
         
     if ($('#shippingCart').attr("src") === "chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/noShippingBox.png") {
       $('#shippingCart').attr("src", "chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/ShippingBox.png");
@@ -199,7 +203,7 @@
         var i;
         for (i = 0; i < listadoProductos.length; i++) {
           nombreArreglado = listadoProductos[i].nombre.substr(8,10);
-          $('#tabProdVarios').append('<tr class ="tdarow"><td class="colCentro" id="tda'+i+'_1">'+nombreArreglado+'</td><td class="colCentro" id="tda'+i+'_2"><select name="cantidadVarios" id="cantidadVarios'+i+'"></td><td class="colCentro" id="tda'+i+'_3"><input type="checkbox" id="cb'+i+'" class="cbvpro"></td><td class="colCentro" id="tda'+i+'_4">$'+listadoProductos[i].precioxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_5">'+listadoProductos[i].medidas.pesoxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_6"></td><td class="colCentro" id="tda'+i+'_7"></td><td class="colCentro" id="tda'+i+'_8"><img width=15px height=15px class="delIcon" id="delIcon" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/menos.png"></td></tr>');
+          $('#tabProdVarios').append('<tr class ="tdarow"><td class="colCentro" id="tda'+i+'_1">'+nombreArreglado+'</td><td class="colCentro" id="tda'+i+'_2"><select name="cantidadVarios" id="cantidadVarios'+i+'"></td><td class="colCentro" id="tda'+i+'_3"><input type="checkbox" id="cb'+i+'" class="cbvpro"></td><td class="colCentro" id="tda'+i+'_4">$'+listadoProductos[i].precioxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_5">'+listadoProductos[i].medidas.pesoxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_6"></td><td class="colCentro" id="tda'+i+'_7"></td><td class="colCentro" id="tda'+i+'_8"><img width=15px height=15px class="delIcon" id="tdai'+i+'"src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/menos.png"></td></tr>');
           
           $('#cantidadVarios'+i).html('<option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>');
 
@@ -220,33 +224,35 @@
             
             nombreID = $(this).attr('id');
             numero = nombreID.substr(2,1);
-
-            console.log($(this).prop('checked'));
             msj.itemNumber = numero;
 
             if ($(this).prop('checked') === true ) {
-              console.log("activado");
               msj.action = "addSBitem";
               
-              console.log(msj.itemNumber);
-              
               } else {
-              console.log("quitado");
               msj.action = "removeSBitem";
               } 
 
             msj.listadoProductos = listadoProductos;
             chrome.runtime.sendMessage(msj); 
-
-          //---------------------------------------
-            
-            
-
+          })
+          
+          $('#tdai'+i).hover(function(){
+            $(this).css("opacity", "0.6");
+            },function(){
+              $(this).css("opacity", "1");
+            }).click(function() {
+            nombreID = $(this).attr('id');
+            numero = nombreID.substr(4,1);
+            msj.itemNumber = numero;
+            msj.action = "removeItem";
+            msj.listadoProductos = listadoProductos;
+            chrome.runtime.sendMessage(msj);
           })
         }
       };
 
-      action1 = ["itemAdded", "productsDeleted", "mostrarSC", "AllSBadded", "AllSBremoved" , "itemSBremoved", "itemSBadded"];
+      action1 = ["itemAdded", "productsDeleted", "mostrarSC", "AllSBadded", "AllSBremoved" , "itemSBremoved", "itemSBadded","itemRemoved"];
 
       var i;
         for (i = 0; i < action1.length; i++) {
@@ -279,7 +285,11 @@
 
   $('#precioMedidasVarios').append('<table><tr><th>Concepto</th><th class="colCentro">Unidad</th><th>Total</th></tr><tr><td  id="tb1">Flete $2.2</td><td class="colCentro" id="tb2"></td><td  id="tb3"></td></tr><tr><td  id="tc1">Seguro</td><td class="colCentro" id="tc2">$10.00</td><td  id="tc3">$10.00</td></tr><tr><td title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados" id="td1">Impuesto</td><td class="colCentro" id="td2" title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados"></td><td title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados" id="td3"></td></tr><tr><td  id="te1">Dif. Volumen $0.99</td><td class="colCentro" id="te2"></td><td  id="te3"></td></tr><tr><td></td><td class="tf3">TOTAL</td><td class="tf3" id="tf3"></td></tr></table>');
 
-  $('#thSB').html('<img class="logoIMG active" id="shippingCartVarios" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/ShippingBox.png">').click(function(){
+  $('#thSB').html('<img class="logoIMG active" id="shippingCartVarios" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/ShippingBox.png">').hover(function(){
+    $(this).css("opacity", "0.6");
+    },function(){
+      $(this).css("opacity", "1");
+    }).click(function(){
         
     if ($('#shippingCartVarios').attr("class") == "logoIMG active") {
       $('#shippingCartVarios').removeClass("active");
@@ -295,7 +305,11 @@
     
   });
 
-  $('#thElim').html('<img class="logoIMG trashcan" id="trashcan" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/trashcan.png">').click(function(){
+  $('#thElim').html('<img class="logoIMG trashcan" id="trashcan" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/trashcan.png">').hover(function(){
+    $(this).css("opacity", "0.6");
+    },function(){
+      $(this).css("opacity", "1");
+    }).click(function(){
 
     msj.action = "deleteAll"
     chrome.runtime.sendMessage(msj);

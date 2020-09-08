@@ -70,8 +70,14 @@ chrome.runtime.onMessage.addListener(function(response, tab, sendResponse) {
         respuesta.itemNumber = response.itemNumber;
         respuesta.listadoProductos[respuesta.itemNumber].medidas.shippingBox = false;
         
+    }else if (respuesta.action === "removeItem" ){
+        respuesta.action = "itemRemoved";
+        respuesta.listadoProductos = response.listadoProductos;
+        respuesta.itemNumber = response.itemNumber;
+        respuesta.listadoProductos.splice(respuesta.itemNumber, 1);
+        
     }
-      
+    
     console.log(respuesta.action);
     console.log(respuesta.listadoProductos);
 
