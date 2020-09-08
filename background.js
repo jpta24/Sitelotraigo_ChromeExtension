@@ -42,14 +42,23 @@ chrome.runtime.onMessage.addListener(function(response, tab, sendResponse) {
     } else if (respuesta.action === "mostrarSC" ){
         respuesta.action = "mostrarSC"
         
-    } else if (respuesta.action === "changeAllSB" ){
-        respuesta.action = "AllSBchanged";
-        respuesta.listadoProductos = response.listadoProductos
+    } else if (respuesta.action === "addAllSB" ){
+        respuesta.action = "AllSBadded";
+        respuesta.listadoProductos = response.listadoProductos;
+        var i;
+        for (i = 0; i < respuesta.listadoProductos.length; i++) {
+          respuesta.listadoProductos[i].medidas.shippingBox = true;
+        }
         
-
-        
-    };
-    
+    } else if (respuesta.action === "removeAllSB" ){
+        respuesta.action = "AllSBremoved";
+        respuesta.listadoProductos = response.listadoProductos;
+        var i;
+        for (i = 0; i < respuesta.listadoProductos.length; i++) {
+          respuesta.listadoProductos[i].medidas.shippingBox = false;
+        }
+    }
+      
     console.log(respuesta.action);
     console.log(respuesta.listadoProductos);
 

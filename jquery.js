@@ -211,7 +211,7 @@
         }
       };
 
-      action1 = ["itemAdded", "productsDeleted", "mostrarSC", "AllSBchanged" ];
+      action1 = ["itemAdded", "productsDeleted", "mostrarSC", "AllSBadded", "AllSBremoved" ];
 
       var i;
         for (i = 0; i < action1.length; i++) {
@@ -248,21 +248,18 @@
         
     if ($('#shippingCartVarios').attr("class") == "logoIMG active") {
       $('#shippingCartVarios').removeClass("active");
-      console.log(listadoProductos);
-      var i;
-        for (i = 0; i < listadoProductos.length; i++) {
-          listadoProductos[i].medidas.shippingBox = true;
-        }
-        console.log(listadoProductos);
-    } else {
-      $('#shippingCartVarios').addClass("active");
-      for (i = 0; i < listadoProductos.length; i++) {
-        listadoProductos[i].medidas.shippingBox = false;
+      console.log("activado");
+      msj.action = "addAllSB";
+      
+      } else {
+        $('#shippingCartVarios').addClass("active");
+      console.log("quitado");
+      msj.action = "removeAllSB";
       }
-      msj.action = "changeAllSB";
+      
       msj.listadoProductos = listadoProductos;
       chrome.runtime.sendMessage(msj);
-    }
+    
   });
 
   $('#thElim').html('<img class="logoIMG trashcan" id="trashcan" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/trashcan.png">').click(function(){

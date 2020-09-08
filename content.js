@@ -10,7 +10,7 @@ var item = {
     cantidad: 1,
     medidas: {
         shippingBox: false,
-        valAgrand: 10,
+        valAgrand: 3,
         dimensiones: "",
         largo: "",
         ancho: "",
