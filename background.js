@@ -70,13 +70,31 @@ chrome.runtime.onMessage.addListener(function(response, tab, sendResponse) {
         respuesta.itemNumber = response.itemNumber;
         respuesta.listadoProductos[respuesta.itemNumber].medidas.shippingBox = false;
         
-    }else if (respuesta.action === "removeItem" ){
+    } else if (respuesta.action === "removeItem" ){
         respuesta.action = "itemRemoved";
         respuesta.listadoProductos = response.listadoProductos;
         respuesta.itemNumber = response.itemNumber;
         respuesta.listadoProductos.splice(respuesta.itemNumber, 1);
         
-    }
+    } else if (respuesta.action === "quantityChange" ){
+        respuesta.action = "quantityChanged";
+        respuesta.listadoProductos = response.listadoProductos;
+        respuesta.itemNumber = response.itemNumber;
+        respuesta.change = response.change;
+
+        itemRes = respuesta.listadoProductos[respuesta.itemNumber];
+        itemResMed = respuesta.listadoProductos[respuesta.itemNumber].medidas;
+
+        itemRes.cantidad = respuesta.change;
+
+        itemRes.precioxCant =  itemRes.cantidad * itemRes.precio;
+
+        itemResMed.pesoxCant =  itemRes.cantidad * itemResMed.peso;
+        itemResMed.volxCant =  itemRes.cantidad * itemResMed.volumen;
+        itemResMed.volMetxCant =  itemRes.cantidad * itemResMed.voluMetrico ;
+        itemResMed.volMetAgrandxCant =  itemRes.cantidad * itemResMed.volMetAgrandxCant;
+        itemResMed.volxCantAgrand =  itemRes.cantidad * itemResMed.volxCantAgrand;
+}
     
     console.log(respuesta.action);
     console.log(respuesta.listadoProductos);

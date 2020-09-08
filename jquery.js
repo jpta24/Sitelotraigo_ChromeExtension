@@ -208,6 +208,17 @@
           $('#cantidadVarios'+i).html('<option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>');
 
           $('#cantidadVarios'+i).val(listadoProductos[i].cantidad);
+
+          $('#cantidadVarios'+i).on("change", function(){
+            nombreID = $(this).attr('id');
+            numero = nombreID.substr(14,1);
+            msj.itemNumber = numero;
+            msj.action = "quantityChange";
+            msj.change = $(this).val();
+            msj.listadoProductos = listadoProductos;
+            chrome.runtime.sendMessage(msj);
+                              
+          });
           
           if ( listadoProductos[i].medidas.shippingBox === false ) {
             $('#cb'+i).prop('checked', false);
@@ -252,16 +263,10 @@
         }
       };
 
-      action1 = ["itemAdded", "productsDeleted", "mostrarSC", "AllSBadded", "AllSBremoved" , "itemSBremoved", "itemSBadded","itemRemoved"];
-
-      var i;
-        for (i = 0; i < action1.length; i++) {
-          if (msj.action === action1[i]){
-            listadoProductos = msj.listadoProductos;
-            actualizarTabla();
-            break
-          }
-        }
+      
+      listadoProductos = msj.listadoProductos;
+      actualizarTabla();
+      
 
      
       
