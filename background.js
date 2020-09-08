@@ -3,7 +3,9 @@
 var respuesta = {
     action: "",
     item: "",
-    listadoProductos: []
+    listadoProductos: [],
+    itemNumber:"",
+    change: "",
 }
 
 function EnvioRespuesta() {
@@ -28,7 +30,6 @@ chrome.runtime.onMessage.addListener(function(response, tab, sendResponse) {
             };
         };
 
-        console.log(repetido.length);
         if (repetido.length === 0) {
             respuesta.listadoProductos.push(nuevoProducto);
             respuesta.action = "itemAdded";
@@ -57,6 +58,18 @@ chrome.runtime.onMessage.addListener(function(response, tab, sendResponse) {
         for (i = 0; i < respuesta.listadoProductos.length; i++) {
           respuesta.listadoProductos[i].medidas.shippingBox = false;
         }
+    } else if (respuesta.action === "addSBitem" ){
+        respuesta.action = "itemSBadded";
+        respuesta.listadoProductos = response.listadoProductos;
+        respuesta.itemNumber = response.itemNumber;
+        respuesta.listadoProductos[respuesta.itemNumber].medidas.shippingBox = true;
+        
+    } else if (respuesta.action === "removeSBitem" ){
+        respuesta.action = "itemSBremoved";
+        respuesta.listadoProductos = response.listadoProductos;
+        respuesta.itemNumber = response.itemNumber;
+        respuesta.listadoProductos[respuesta.itemNumber].medidas.shippingBox = false;
+        
     }
       
     console.log(respuesta.action);
@@ -66,4 +79,5 @@ chrome.runtime.onMessage.addListener(function(response, tab, sendResponse) {
     // ---------------------------------------------------------
 
     EnvioRespuesta();
+    
 });

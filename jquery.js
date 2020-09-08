@@ -2,7 +2,9 @@
   var msj = {
     action: "",
     item: "",
-    listadoProductos: []
+    listadoProductos: [],
+    itemNumber:"",
+    change: "",
   }
 
   var listadoProductos = [];
@@ -197,21 +199,54 @@
         var i;
         for (i = 0; i < listadoProductos.length; i++) {
           nombreArreglado = listadoProductos[i].nombre.substr(8,10);
-          $('#tabProdVarios').append('<tr class ="tdarow"><td class="colCentro" id="tda'+i+'_1">'+nombreArreglado+'</td><td class="colCentro" id="tda'+i+'_2"><select name="cantidadVarios" id="cantidadVarios'+i+'"></td><td class="colCentro" id="tda'+i+'_3"><input type="checkbox" id="cb'+i+'" class="cbvpro"></td><td class="colCentro" id="tda'+i+'_4">$'+listadoProductos[i].precioxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_5">'+listadoProductos[i].medidas.pesoxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_6">'+listadoProductos[i].medidas.volumen.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_7">'+listadoProductos[i].medidas.volMetxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_8"><img width=15px height=15px class="delIcon" id="delIcon" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/menos.png"></td></tr>');
+          $('#tabProdVarios').append('<tr class ="tdarow"><td class="colCentro" id="tda'+i+'_1">'+nombreArreglado+'</td><td class="colCentro" id="tda'+i+'_2"><select name="cantidadVarios" id="cantidadVarios'+i+'"></td><td class="colCentro" id="tda'+i+'_3"><input type="checkbox" id="cb'+i+'" class="cbvpro"></td><td class="colCentro" id="tda'+i+'_4">$'+listadoProductos[i].precioxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_5">'+listadoProductos[i].medidas.pesoxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_6"></td><td class="colCentro" id="tda'+i+'_7"></td><td class="colCentro" id="tda'+i+'_8"><img width=15px height=15px class="delIcon" id="delIcon" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/menos.png"></td></tr>');
           
           $('#cantidadVarios'+i).html('<option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>');
 
           $('#cantidadVarios'+i).val(listadoProductos[i].cantidad);
-
+          
           if ( listadoProductos[i].medidas.shippingBox === false ) {
             $('#cb'+i).prop('checked', false);
+            $('#tda'+i+'_6').text(+listadoProductos[i].medidas.volxCant.toFixed(2));
+            $('#tda'+i+'_7').text(+listadoProductos[i].medidas.volMetxCant.toFixed(2));
           } else {
             $('#cb'+i).prop('checked', true);
+            $('#tda'+i+'_6').text(+listadoProductos[i].medidas.volxCantAgrand.toFixed(2));
+            $('#tda'+i+'_7').text(+listadoProductos[i].medidas.volMetAgrandxCant.toFixed(2));
           }
+
+            
+          $('#cb'+i).click(function(){
+            
+            nombreID = $(this).attr('id');
+            numero = nombreID.substr(2,1);
+
+            console.log($(this).prop('checked'));
+            msj.itemNumber = numero;
+
+            if ($(this).prop('checked') === true ) {
+              console.log("activado");
+              msj.action = "addSBitem";
+              
+              console.log(msj.itemNumber);
+              
+              } else {
+              console.log("quitado");
+              msj.action = "removeSBitem";
+              } 
+
+            msj.listadoProductos = listadoProductos;
+            chrome.runtime.sendMessage(msj); 
+
+          //---------------------------------------
+            
+            
+
+          })
         }
       };
 
-      action1 = ["itemAdded", "productsDeleted", "mostrarSC", "AllSBadded", "AllSBremoved" ];
+      action1 = ["itemAdded", "productsDeleted", "mostrarSC", "AllSBadded", "AllSBremoved" , "itemSBremoved", "itemSBadded"];
 
       var i;
         for (i = 0; i < action1.length; i++) {
@@ -248,12 +283,10 @@
         
     if ($('#shippingCartVarios').attr("class") == "logoIMG active") {
       $('#shippingCartVarios').removeClass("active");
-      console.log("activado");
       msj.action = "addAllSB";
       
       } else {
         $('#shippingCartVarios').addClass("active");
-      console.log("quitado");
       msj.action = "removeAllSB";
       }
       
@@ -299,5 +332,16 @@
 
 });
 
+
+/* pasos para saguir un error 
+console.log("paso1 enviar mensaje");
+
+console.log("paso2 recibir mensaje y verificar tipo de accion");
+
+console.log("paso3 estoy en la accion");
+
+console.log("paso4 respuesta enviada");
+console.log("paso5 respuesta recibida"); */
+      
 
  
