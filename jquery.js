@@ -384,7 +384,7 @@
 
   $('#shoppingCartResGral').append("<div><img class='logoIMG' src='chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/stlt2.jpg'><h3 class='tituloMasInfo'>Desglose de Varios Productos</h3></div>").append("<div id='medidasPesoVarios' class='medidasPeso'></div>").append("<div class='separacion'></div>").append("<div id='precioMedidasVarios' class='precioMedidas'></div>").append("<p class='pFinal'>Los precios son referenciales y serán confirmados al recibir la carga en nuestros depositos</p>");
 
-  $('#medidasPesoVarios').append('<table id="tabProdVarios"><tr><th class="colCentro">Nombre</th><th class="colCentro">Cantidad</th><th class="colCentro" title="Estimación de la Caja de Envio" id="thSB"></th><th class="colCentro">Precio</th><th class="colCentro">Peso<br>(libras)</th><th class="colCentro">Volumen<br>(inches<sup>3</sup>)</th><th class="colCentro">Peso<br>VolMetr.</th><th class="colCentro" title="Eliminar Todos" id="thElim"></th></tr></table>');
+  $('#medidasPesoVarios').append('<table id="tabProdVarios"><tr><th class="colCentro">Nombre</th><th class="colCentro">Cantidad</th><th class="colCentro" title="Estimación de la Caja de Envio" id="thSB"></th><th class="colCentro">Precio<br>Productos</th><th class="colCentro">Peso<br>(libras)</th><th class="colCentro">Volumen<br>(inches<sup>3</sup>)</th><th class="colCentro">Peso<br>VolMetr.</th><th class="colCentro" title="Eliminar Todos" id="thElim"></th></tr></table>');
 
   $('#thSB').html('<img class="logoIMG active" id="shippingCartVarios" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/ShippingBox.png">').hover(function(){
     $(this).css("opacity", "0.6");
