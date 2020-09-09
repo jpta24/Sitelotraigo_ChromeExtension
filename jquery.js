@@ -317,22 +317,27 @@
       
 
       $('#precioMedidasVarios').append('<table><tr><th>Concepto</th><th class="colCentro">Unidad</th><th>Total</th></tr><tr><td  id="tb1f">Flete $2.2</td><td class="colCentro" id="tbf2"></td><td  id="tbf3"></td></tr><tr><td  id="tcf1">Seguro</td><td class="colCentro" id="tcf2">$10.00</td><td  id="tcf3">$10.00</td></tr><tr><td title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados" id="tdf1">Impuesto</f><td class="colCentro" id="tdf2" title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados"></td><td title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados" id="tdf3"></td></tr><tr><td  id="tef1">Dif. Volumen $0.99</td><td class="colCentro" id="tef2"></td><td  id="tef3"></td></tr><tr><td></td><td class="tf3">TOTAL</td><td class="tf3" id="tff3"></td></tr></table>');
-
+      
       fleteX = 22;
+      seguroX = 10;
+      if ( listadoProductos == "" ){
+        fleteX = 0;
+        seguroX = 0;
+      }
+      
 
       if (pesoProductsX < 10 ) {
         $('#tbf2').text('10 (min)');
         $('#tbf3').text("$22.00");
+        pesoProductsX = 10;
       } else {
         fleteX = pesoProductsX * item.costoEnvio.precLibra;
         $('#tbf2').text(pesoProductsX.toFixed(2));
         $('#tbf3').text("$" + fleteX.toFixed(2));
       }
       
-      seguroX = 10;
       impuestoX = 0;
       
-  
       if (priceProductsX * 0.6 < 200 ) {
         $('#tdf2').text("0%");
         $('#tdf3').text("$0");
