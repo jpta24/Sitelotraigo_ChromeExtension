@@ -201,6 +201,7 @@
       function actualizarTabla(){
         $('#tabProdVarios tr').remove(".tdarow");
         $('#tabProdVarios tr').remove(".tdaFinal");
+        $('#precioMedidasVarios').empty();
         var i;
         for (i = 0; i < listadoProductos.length; i++) {
           nombreArreglado = listadoProductos[i].nombre.substr(8,10);
@@ -313,6 +314,53 @@
       $('#tdaf_6').html('<b>' + volProductsX.toFixed(2) + '</b>'); 
       $('#tdaf_7').html('<b>' + voluMetrProductsX.toFixed(2) + '</b>'); 
 
+      
+
+      $('#precioMedidasVarios').append('<table><tr><th>Concepto</th><th class="colCentro">Unidad</th><th>Total</th></tr><tr><td  id="tb1f">Flete $2.2</td><td class="colCentro" id="tbf2"></td><td  id="tbf3"></td></tr><tr><td  id="tcf1">Seguro</td><td class="colCentro" id="tcf2">$10.00</td><td  id="tcf3">$10.00</td></tr><tr><td title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados" id="tdf1">Impuesto</f><td class="colCentro" id="tdf2" title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados"></td><td title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados" id="tdf3"></td></tr><tr><td  id="tef1">Dif. Volumen $0.99</td><td class="colCentro" id="tef2"></td><td  id="tef3"></td></tr><tr><td></td><td class="tf3">TOTAL</td><td class="tf3" id="tff3"></td></tr></table>');
+
+      fleteX = 22;
+
+      if (pesoProductsX < 10 ) {
+        $('#tbf2').text('10 (min)');
+        $('#tbf3').text("$22.00");
+      } else {
+        fleteX = pesoProductsX * item.costoEnvio.precLibra;
+        $('#tbf2').text(pesoProductsX.toFixed(2));
+        $('#tbf3').text("$" + fleteX.toFixed(2));
+      }
+      
+      seguroX = 10;
+      impuestoX = 0;
+      
+  
+      if (priceProductsX * 0.6 < 200 ) {
+        $('#tdf2').text("0%");
+        $('#tdf3').text("$0");
+      } else {
+        impuestoX = priceProductsX * 0.6 * item.costoEnvio.porcentImpuesto;
+        $('#tdf2').text("30%");
+        $('#tdf3').text("$" + impuestoX.toFixed(2));
+      }
+      
+      adicionalXX = 0;
+      if (voluMetrProductsX * 1 < 10 ) {
+        $('#tef2').text("0");
+        $('#tef3').text("$0");
+  
+      } else if (voluMetrProductsX *1 >  pesoProductsX) {
+        adicionalX = (voluMetrProductsX *1) - pesoProductsX;
+        adicionalXX = adicionalX * item.costoEnvio.precLibraAdicional;
+        $('#tef2').text(adicionalX.toFixed(2));
+        $('#tef3').text("$" + adicionalXX.toFixed(2));
+      
+      } else {
+        $('#tef2').text("0");
+        $('#tef3').text("$0");
+      };
+
+      totalX = adicionalXX + impuestoX + seguroX + fleteX;
+      $('#tff3').text("$" + totalX.toFixed(2));
+
       // ---------------------------------------------------------
       console.log(msj.action);
       console.log(listadoProductos);
@@ -332,8 +380,6 @@
   $('#shoppingCartResGral').append("<div><img class='logoIMG' src='chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/stlt2.jpg'><h3 class='tituloMasInfo'>Desglose de Varios Productos</h3></div>").append("<div id='medidasPesoVarios' class='medidasPeso'></div>").append("<div class='separacion'></div>").append("<div id='precioMedidasVarios' class='precioMedidas'></div>").append("<p class='pFinal'>Los precios son referenciales y serán confirmados al recibir la carga en nuestros depositos</p>");
 
   $('#medidasPesoVarios').append('<table id="tabProdVarios"><tr><th class="colCentro">Nombre</th><th class="colCentro">Cantidad</th><th class="colCentro" title="Estimación de la Caja de Envio" id="thSB"></th><th class="colCentro">Precio</th><th class="colCentro">Peso<br>(libras)</th><th class="colCentro">Volumen<br>(inches<sup>3</sup>)</th><th class="colCentro">Peso<br>VolMetr.</th><th class="colCentro" title="Eliminar Todos" id="thElim"></th></tr></table>');
-
-  $('#precioMedidasVarios').append('<table><tr><th>Concepto</th><th class="colCentro">Unidad</th><th>Total</th></tr><tr><td  id="tb1">Flete $2.2</td><td class="colCentro" id="tb2"></td><td  id="tb3"></td></tr><tr><td  id="tc1">Seguro</td><td class="colCentro" id="tc2">$10.00</td><td  id="tc3">$10.00</td></tr><tr><td title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados" id="td1">Impuesto</td><td class="colCentro" id="td2" title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados"></td><td title="El impuesto se comienza a cobrar cuando el precio sobre pasa los 200$ declarados" id="td3"></td></tr><tr><td  id="te1">Dif. Volumen $0.99</td><td class="colCentro" id="te2"></td><td  id="te3"></td></tr><tr><td></td><td class="tf3">TOTAL</td><td class="tf3" id="tf3"></td></tr></table>');
 
   $('#thSB').html('<img class="logoIMG active" id="shippingCartVarios" src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/ShippingBox.png">').hover(function(){
     $(this).css("opacity", "0.6");
@@ -369,7 +415,7 @@
   function mostrarShippingCart() {
     $('#masIcon').attr("src", "chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/menos.png");
         $("#shoppingCartResGral").attr("display", "flex");
-        $("#shoppingCartResGral").slideToggle("slow");
+        $("#shoppingCartResGral").slideToggle("fast");
 
   };
   
@@ -388,7 +434,7 @@
       } else {
         $('#masIcon').attr("src", "chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/mas.png");
         $("#shoppingCartResGral").attr("display", "none");
-        $("#shoppingCartResGral").slideToggle("slow");
+        $("#shoppingCartResGral").slideToggle("fast");
       }
     });
 
