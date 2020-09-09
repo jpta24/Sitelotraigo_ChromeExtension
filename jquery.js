@@ -200,10 +200,11 @@
       msj = request;
       function actualizarTabla(){
         $('#tabProdVarios tr').remove(".tdarow");
+        $('#tabProdVarios tr').remove(".tdaFinal");
         var i;
         for (i = 0; i < listadoProductos.length; i++) {
           nombreArreglado = listadoProductos[i].nombre.substr(8,10);
-          $('#tabProdVarios').append('<tr class ="tdarow"><td class="colCentro" id="tda'+i+'_1">'+nombreArreglado+'</td><td class="colCentro" id="tda'+i+'_2"><select name="cantidadVarios" id="cantidadVarios'+i+'"></td><td class="colCentro" id="tda'+i+'_3"><input type="checkbox" id="cb'+i+'" class="cbvpro"></td><td class="colCentro" id="tda'+i+'_4">$'+listadoProductos[i].precioxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_5">'+listadoProductos[i].medidas.pesoxCant.toFixed(2)+'</td><td class="colCentro" id="tda'+i+'_6"></td><td class="colCentro" id="tda'+i+'_7"></td><td class="colCentro" id="tda'+i+'_8"><img width=15px height=15px class="delIcon" id="tdai'+i+'"src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/menos.png"></td></tr>');
+          $('#tabProdVarios').append('<tr class ="tdarow"><td class="colCentro" id="tda'+i+'_1">'+nombreArreglado+'</td><td class="colCentro colQty" id="tda'+i+'_2"><select name="cantidadVarios" id="cantidadVarios'+i+'"></td><td class="colCentro" id="tda'+i+'_3"><input type="checkbox" id="cb'+i+'" class="cbvpro"></td><td class="colCentro colPrice" id="tda'+i+'_4">$'+listadoProductos[i].precioxCant.toFixed(2)+'</td><td class="colCentro colPeso" id="tda'+i+'_5">'+listadoProductos[i].medidas.pesoxCant.toFixed(2)+'</td><td class="colCentro colVol" id="tda'+i+'_6"></td><td class="colCentro colVolMet" id="tda'+i+'_7"></td><td class="colCentro" id="tda'+i+'_8"><img width=15px height=15px class="delIcon" id="tdai'+i+'"src="chrome-extension://cfpnkkbkipdpbpnlndfclpokkbkohdkm/img/menos.png"></td></tr>');
           
           $('#cantidadVarios'+i).html('<option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>');
 
@@ -266,14 +267,58 @@
       
       listadoProductos = msj.listadoProductos;
       actualizarTabla();
-      
 
+      $('#tabProdVarios').append('<tr class ="tdaFinal"><td class="colCentro" id="tdaf_1"><b>TOTALES</b></td><td class="colCentro" id="tdaf_2"></td><td class="colCentro" id="tdaf_3"></td><td class="colCentro" id="tdaf_4"></td><td class="colCentro" id="tdaf_5"></td><td class="colCentro" id="tdaf_6"></td><td class="colCentro" id="tdaf_7"></td><td class="colCentro" id="tdaf_8"></td></tr>');
+
+     var i;
+     var qtyTotal = [];
+      priceProducts = [];
+      pesoProducts = [];
+      volProducts = [];
+      voluMetrProducts = [];
      
-      
+     for (i = 0; i < listadoProductos.length; i++) {
+      qtyTotal.push(listadoProductos[i].cantidad);
+      priceProducts.push(listadoProductos[i].precioxCant);
+      pesoProducts.push(listadoProductos[i].medidas.pesoxCant);
+
+      if ( listadoProductos[i].medidas.shippingBox === false ){
+        volProducts.push(listadoProductos[i].medidas.volxCant);
+        voluMetrProducts.push(listadoProductos[i].medidas.volMetxCant);
+      } else {
+        volProducts.push(listadoProductos[i].medidas.volxCantAgrand);
+        voluMetrProducts.push(listadoProductos[i].medidas.volMetAgrandxCant);
+      }
+     };
+
+      qtyTotalX = 0;
+        $.each(qtyTotal,function(){qtyTotalX+=parseFloat(this) || 0;});
+
+      priceProductsX = 0;
+        $.each(priceProducts,function(){priceProductsX+=parseFloat(this) || 0;});
+
+      pesoProductsX = 0;
+        $.each(pesoProducts,function(){pesoProductsX+=parseFloat(this) || 0;});
+
+      volProductsX = 0;
+      $.each(volProducts,function(){volProductsX+=parseFloat(this) || 0;});
+
+      voluMetrProductsX = 0;
+      $.each(voluMetrProducts,function(){voluMetrProductsX+=parseFloat(this) || 0;});
+
+
+      $('#tdaf_2').text(qtyTotalX); 
+      $('#tdaf_4').html('<b>$' + priceProductsX.toFixed(2) + '</b>'); 
+      $('#tdaf_5').html('<b>' + pesoProductsX.toFixed(2) + '</b>'); 
+      $('#tdaf_6').html('<b>' + volProductsX.toFixed(2) + '</b>'); 
+      $('#tdaf_7').html('<b>' + voluMetrProductsX.toFixed(2) + '</b>'); 
+
       // ---------------------------------------------------------
       console.log(msj.action);
       console.log(listadoProductos);
     });
+
+
 //----------------------------------------------------------------
 //----------------------------------------------------------------
 //----------------------------------------------------------------
