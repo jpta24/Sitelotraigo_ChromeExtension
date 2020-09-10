@@ -165,3 +165,63 @@ overflow: hidden;
 .separacion {
     height: 20px;
 }
+
+.bodypopup {
+    width: 400px;
+    padding: 5px;
+    margin: 3px;
+    border: 7px solid #1A45AD;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+.tituloDivPOP {
+    flex-flow: row;
+    place-items: baseline;
+    display: flex;
+    justify-content: center;
+}
+
+.descIcon {
+    width: auto;
+    height: 30px;
+    padding-left: 10px;
+    margin: 0px;
+}
+
+.h1POP, .h2POP {
+    width: auto;
+    text-align: center;
+}
+.leyendaPOP {
+    width: auto;
+    padding: 5px;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.lineasPOP {
+    display: flex;
+    margin: 5px 0px;
+
+}
+.iconPOP {
+    width: 30px;
+    height: 30px;
+}
+.divIconPOP {
+    width: 46px;
+    height: 30px;
+    display: flex;
+}
+
+.iconPOP2 {
+    width: 15px;
+    height: 15px;
+    margin: auto;
+}
+

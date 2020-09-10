@@ -9,24 +9,21 @@
     },
 
     "icons" : {
-        "16" : "img/icon2.png",
-        "48" : "img/icon.png"
+        "16" : "img/stlt16.png",
+        "48" : "img/stlt50.png"
         },
     
 
     "web_accessible_resources": [
             "img/col.png",
             "img/ven.png",
-            "img/ml.jpg",
             "img/stlt2.jpg",
             "img/info.png",
             "img/SC1.png",
-            "img/SC2.png",
             "img/noShippingBox.png",
             "img/ShippingBox.png",
             "img/mas.png",
-            "img/menos.png",            
-            "img/refresh.png",
+            "img/menos.png",   
             "img/trashcan.png"
           ],
 
