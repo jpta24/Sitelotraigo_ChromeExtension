@@ -14,8 +14,14 @@
   divPrice.after("<div id='resNS' class='resNS'></div>");
 
   var resNS = $('#resNS');
+  
+  resNS.html("<div id='resNS2' class='resNS2'></div>");
 
-  resNS.html("<div id='logo' class='logo'></div>");
+  var resNS2 = $('#resNS2');
+
+  resNS2.after("<div id='fechaEntregaTxt' class='fechaEntregaTxt'>Fecha estimada de Entrega<span id='fechaEntregaFecha' class='fechaEntregaFecha'>: mar, 16-Sep-2020</span></div>");
+
+  resNS2.html("<div id='logo' class='logo'></div>");
 
   $('#logo').after("<p id='costo' class='costo'></p>").after("<form id='formEnvio' class='formEnvio'></form>");
 
@@ -145,6 +151,12 @@
         $('#te2').text("0");
         $('#te3').text("$0");
   
+      } else if ( 10 > item.medidas.pesoxCant) {
+        volumenArreglado = (item.medidas.volMetxCant*1) - 10;
+        item.costoEnvio.fleteAdicional = ((item.medidas.volMetxCant) - 10) * item.costoEnvio.precLibraAdicional;
+        $('#te2').text(volumenArreglado.toFixed(2));
+        $('#te3').text("$" + item.costoEnvio.fleteAdicional.toFixed(2));
+      
       } else if (item.medidas.volMetxCant*1 > item.medidas.pesoxCant) {
         volumenArreglado = (item.medidas.volMetxCant*1) - item.medidas.pesoxCant;
         item.costoEnvio.fleteAdicional = ((item.medidas.volMetxCant) - item.medidas.pesoxCant) * item.costoEnvio.precLibraAdicional;
@@ -184,8 +196,70 @@
 
       $('#tf3').text("$" + item.costoEnvio.costoEnvFinalConSB.toFixed(2));
     }
+    //------------------------ FECHA ENTREGA ---------------------
+    var daysToDeliver = 7;
+    var fecha = new Date();
     
-    console.log(item);
+      year = fecha.getFullYear();
+      mes = fecha.getMonth();
+      dia = fecha.getDate();
+      horas = fecha.getHours();
+      horasUTC = fecha.getUTCHours();
+      
+      difHours = horas - horasUTC;
+
+      horasUSA = horasUTC - 4 - difHours;
+
+      fecha.setFullYear(year, mes, dia);
+      fecha.setHours(horasUSA);
+
+      year = fecha.getFullYear();
+      mes = fecha.getMonth();
+      dia = fecha.getDate();
+      horas = fecha.getHours();
+
+      if (horas > 17 ){
+        dia += 1;
+      }
+
+      fecha.setFullYear(year, mes, dia);
+
+      year = fecha.getFullYear();
+      mes = fecha.getMonth();
+      dia = fecha.getDate();
+      date = fecha.getDay();
+      
+      if (date == 0) {
+        dia += 3 + daysToDeliver
+      } else if (date == 1 || date == 2 || date == 3 || date == 4 ) {
+        dia += 2 + daysToDeliver
+      } else if (date == 5 || date == 6 || date == 7) {
+        dia += 4 + daysToDeliver
+      };
+
+      fecha.setFullYear(year, mes, dia);
+
+      
+
+      fecha.setFullYear(year, mes, dia);
+
+      year = fecha.getFullYear();
+      mes = fecha.getMonth();
+      dia = fecha.getDate();
+      date = fecha.getDay();
+ 
+    var semana = ['dom','lun','mar','mie','jue','vie','sab'];
+      
+    var meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+      diaSemf = semana[date];
+
+      mesF = meses[mes];
+
+      fechaEntrega = " : " + diaSemf + ", " + dia + "-" + mesF + "-" + year;
+      item.costoEnvio.fechaEntrega = fecha;
+
+    $('#fechaEntregaFecha').text(fechaEntrega);
   };
 //--------------------------------------------------------------------------------
 
@@ -443,6 +517,21 @@
       }
     });
 
+    if (item.precio === "" ) {
+      $('#costo').text("Falta Precio");
+
+      $('#tf3').text("Falta Precio");
+    } else if (item.medidas.peso == "") {
+      $('#costo').text("Falta Peso");
+
+      $('#tf3').text("Falta Peso");
+    } else if (item.medidas.volumen == "") {
+      $('#costo').text("Faltan Dimen.");
+
+      $('#tf3').text("Faltan Dimen.");
+    }
+
+    
 
 
 });

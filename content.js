@@ -1,5 +1,3 @@
-// Archivo content2.js pasado a jQuery
-
 var item = {
     nombre: "",
     asin: "",
@@ -39,24 +37,21 @@ var item = {
         seguro:  10, 
         costoEnvFinal : "",
         costoEnvFinalConSB: "",
+        fechaEntrega: "",
     },
-    costosML: {
-        comML: "",
-        impML: "",
-        envioInterno: "2.57",
-        costoMLFinal: "",
-    },
-}
+};
 
 if( $('body').find('#priceblock_ourprice').length != 0 ) {
     precioTxt = $('#priceblock_ourprice').text();
 } else {
     precioTxt = $('#priceblock_saleprice').text();
 };
-                
-item.precioBruto = precioTxt.substring(precioTxt.indexOf("$")+1);
 
-item.precio = parseFloat(item.precioBruto.replace(",",""));
+if (precioTxt != ""){
+    item.precioBruto = precioTxt.substring(precioTxt.indexOf("$")+1);
+
+    item.precio = parseFloat(item.precioBruto.replace(",",""));
+}                
 
 var nombre = $('#productTitle').text();
 
@@ -86,13 +81,13 @@ var disp = $('#availability').text();
 
 item.disponibilidad = disp;
 
-// Variables para buscar elementos
-
-var ProdDim = "";
-
-
+postm0 = null;
+postm1 = null;
+detTipo01 = null;
+medNum = null;
 detTipo0 = "";
-detTipo1 = ["prodDetails", "detail-bullets", "productOverview_feature_div"];
+detTipo1 = ["prodDetails", "detail-bullets", "productOverview_feature_div", "detailBullets_feature_div"];
+
 
 tipoMed0 = "";
 tipoMed1 = ["\nProduct Dimensions\n", "\nPackage Dimensions\n", "Product Dimensions", "Package Dimensions", "Información de producto", "\nInformación de producto\n", "Item Dimensions  LxWxH", "\nItem Dimensions  LxWxH\n",  "Dimensiones del artículo Largo x Ancho x Altura", "\nDimensiones del artículo Largo x Ancho x Altura\n", "Dimensiones del producto", "\nDimensiones del producto\n", "Dimensiones del paquete", "\nDimensiones del paquete\n" ];
@@ -104,86 +99,80 @@ tipoPeso0 = "";
 tipoPeso1 = ["\nItem Weight\n", "Shipping Weight", "Peso del producto", "\nPeso del producto\n" ];
 
 uniPeso0 = "";
-uniPeso1 = ["ounces", "pounds", "Ounces", "Onzas", "lbs", "libras", "kg" , "kgs", "gr", "grs" ];
+uniPeso1 = ["Pounds", "pounds", "Libras", "libras", "Ounces", "ounces", "Onzas", "onzas", "lbs", "kg" , "kgs", "gr", "grs" ];
 
 
 
-// tipo de div
 var tipoDetalles = $('div');
 var i;
+
 var j;
+detTipo0 = [];
 for (i = 0; i < tipoDetalles.length; i++) {
     for (j = 0; j < detTipo1.length; j++) {
         if (detTipo1[j]  == tipoDetalles[i].getAttribute("id")) {
-            detTipo0 = detTipo1[j];
-            console.log("tipo de div: " + detTipo0);
-            break
-        } 
-        break
-    } 
+            detTipo0.push({"attr":j, "posicion": i});
+        };
+    }; 
 };
 
-// Tipo de Detalles del Producto (Med)
-
- if ( detTipo0 == detTipo1[0]) {
-    var x = $(".a-size-base");
+// Tipo de Detalles del Producto y Tipo de Peso (Med)
+function checkTipoMedByClass (classType, val1){
+    var val1 = document.getElementsByClassName(classType);
     var i;
     var j;
-
-    for (i = 0; i < x.length; i++) {
+    for (i = 0; i < val1.length; i++) {
         for (j = 0; j < tipoMed1.length; j++) {
-            if (x[i].innerHTML == tipoMed1[j]) {
+            
+            if (val1[i].innerHTML == tipoMed1[j]) {
                 tipoMed0 = tipoMed1[j];
                 postm0 = i;
-                console.log("tipo de dim: " + tipoMed0);
-                console.log("ubicacion de dim: " + postm0);
+                detTipo01 = detTipo0[k].attr;
                 break
             } 
-        } 
+        };
+
+        for (j = 0; j < tipoPeso1.length; j++) {
+            if (tipoPeso1[j] == val1[i].innerHTML) {
+                tipoPeso0 = tipoPeso1[j];
+                postm1 = i;
+                detEnv01 = detTipo0[k].attr;
+                break
+            }
+        };
     }
- } else if ( detTipo0 == detTipo1[1] ) {
-    var tipoLista = $('li');
+    
+};
+
+function checkTipoMedByLi (val1){
+    val1 = $('li');
     var i;
     var j;
-        for (i = 0; i < tipoLista.length; i++) {
-            for (j = 0; j < tipoMed1.length; j++) {
-                if (tipoLista[i].innerHTML.search(tipoMed1[j]) !== -1) {
-                    tipoMed0 = tipoMed1[j];
-                    postm0 = i;
-                    console.log("tipo de dim: " + tipoMed0);
-                    console.log("ubicacion de dim: " + postm0);
-                    break
-                } 
-            } 
-        }
-
- }  else if ( detTipo0 == detTipo1[2]) {
-    var x = $(".a-size-base");
-    var i;
-    var j;
-
-    for (i = 0; i < x.length; i++) {
+    
+    for (i = 0; i < val1.length; i++) {
         for (j = 0; j < tipoMed1.length; j++) {
-            if (x[i].innerHTML == tipoMed1[j]) {
+            if (val1[i].innerHTML.search(tipoMed1[j]) !== -1) {
                 tipoMed0 = tipoMed1[j];
                 postm0 = i;
-                console.log("tipo de dim: " + tipoMed0);
-                console.log("ubicacion de dim: " + postm0);
+                detTipo01 = detTipo0[k].attr;
                 break
             } 
-        } 
+        };
+
+        for (j = 0; j < tipoPeso1.length; j++) {
+            if (val1[i].innerHTML.search(tipoPeso1[j]) !== -1) {
+                tipoPeso0 = tipoPeso1[j];
+                postm1 = i;
+                detEnv01 = detTipo0[k].attr;
+                break
+            }  
+        };
     }
- } else {
-    tipoMed0 = "S/Inf";
-    postm0 = null;
- };
+};
 
- // Tipo de unidad de medida 
-
- if ( detTipo0 == detTipo1[0] && postm0 != null ) {
-
-    var uniMedida = document.getElementsByClassName("a-size-base")[postm0].nextElementSibling.innerHTML;
-
+// Tipo de unidad de medida 
+function getMedNumByClass (classType){
+    var uniMedida = document.getElementsByClassName(classType)[postm0].nextElementSibling.innerHTML;
     var i;
     for (i = 0; i < uniMedida1.length; i++) {
         if ( uniMedida.search(uniMedida1[i]) !== -1 ) {
@@ -197,7 +186,6 @@ for (i = 0; i < tipoDetalles.length; i++) {
                 item.medidas.largo = medNum.substring(0, indices[0]-1);
                 item.medidas.ancho = medNum.substring(indices[0]+2, indices[1]-1);
                 item.medidas.prof = medNum.substring(indices[1]+2);
-                console.log("uni de dim: " + uniMedida);
             }
                 
             break
@@ -205,118 +193,67 @@ for (i = 0; i < tipoDetalles.length; i++) {
             uniMedida0 = "S/Inf";
         }
     }
-
-} else if ( detTipo0 == detTipo1[1] && postm0 != null ){
-
-    var uniMedida = document.getElementsByTagName('li')[postm0].innerText;
-
-    var i;
-    for (i = 0; i < uniMedida1.length; i++) {
-        if ( uniMedida.search(uniMedida1[i]) !== -1 ) {
-            uniMedida0 = uniMedida1[i];
-            medNum = uniMedida.substring(uniMedida.indexOf(":")+2, uniMedida.search(uniMedida0)-1);
-            var indices = [];
-            var j;
-            for(var j=0; i < medNum.length; i++) {
-                if (medNum[i] === "x") indices.push(i);
-                item.medidas.largo = medNum.substring(0, indices[0]-1);
-                item.medidas.ancho = medNum.substring(indices[0]+2, indices[1]-1);
-                item.medidas.prof = medNum.substring(indices[1]+2);
-                console.log("uni de dim: " + uniMedida);
-            }
-            break
-        }  else {
-            uniMedida0 = "S/Inf";
-        }
-    }
-
-
-} else if ( detTipo0 == detTipo1[2] && postm0 != null ) {
-
-    var uniMedida = document.getElementsByClassName("a-size-base")[postm0 +1 ].innerHTML;
-
-    var i;
-    for (i = 0; i < uniMedida1.length; i++) {
-        if ( uniMedida.search(uniMedida1[i]) !== -1 ) {
-            uniMedida0 = uniMedida1[i];
-            medNum = uniMedida.substring(1, uniMedida.search(uniMedida0)-1);
-            var indices = [];
-            var j;
-            for(var j=0; i < medNum.length; i++) {
-                if (medNum[i] === "x") indices.push(i);
-                item.medidas.largo = medNum.substring(0, indices[0]-1);
-                item.medidas.ancho = medNum.substring(indices[0]+2, indices[1]-1);
-                item.medidas.prof = medNum.substring(indices[1]+2);
-                console.log("uni de dim: " + uniMedida);
-                }
-            break
-        }  else {
-            uniMedida0 = "S/Inf";
-        }
-    }
-
 };
 
-// Tipo de Envio
-
-if ( detTipo0 == detTipo1[0] ) {
-    var x = $(".a-size-base");
+function getMedNumByLi (){
+    var uniMedida = document.getElementsByTagName('li')[postm0].innerText;
     var i;
-    var j;
-
-    for (i = 0; i < x.length; i++) {
-        for (j = 0; j < tipoPeso1.length; j++) {
-            if (tipoPeso1[j] == x[i].innerHTML) {
-                tipoPeso0 = tipoPeso1[j];
-                postm1 = i;
-                console.log("tipo de envio: " + tipoPeso0);
-                console.log("ubicacion de envio: " + postm1);
-                break
+    for (i = 0; i < uniMedida1.length; i++) {
+        if ( uniMedida.search(uniMedida1[i]) !== -1 ) {
+            uniMedida0 = uniMedida1[i];
+            medNum = uniMedida.substring(uniMedida.indexOf(":")+2, uniMedida.search(uniMedida0)-1);            
+            item.medidas.dimensiones = medNum;
+            var indices = [];
+            var j;
+            for(var j=0; i < medNum.length; i++) {
+                if (medNum[i] === "x") indices.push(i);
+                item.medidas.largo = medNum.substring(0, indices[0]-1);
+                item.medidas.ancho = medNum.substring(indices[0]+2, indices[1]-1);
+                item.medidas.prof = medNum.substring(indices[1]+2);
             }
-        } 
-    }
- } else if ( detTipo0 == detTipo1[1] ) {
-    var tipoLista = $('li');
-    var i;
-    var j;
-        for (i = 0; i < tipoLista.length; i++) {
-            for (j = 0; j < tipoPeso1.length; j++) {
-                if (tipoLista[i].innerHTML.search(tipoPeso1[j]) !== -1) {
-                    tipoPeso0 = tipoPeso1[j];
-                    postm1 = i;
-                    console.log("tipo de envio: " + tipoPeso0);
-                    console.log("ubicacion de envio: " + postm1);
-                    break
-                }  
-            } 
+            break
+        }  else {
+            uniMedida0 = "S/Inf";
         }
-
- } else if ( detTipo0 == detTipo1[2] ) {
-    var x = $(".a-size-base");
-    var i;
-    var j;
-
-    for (i = 0; i < x.length; i++) {
-        for (j = 0; j < tipoPeso1.length; j++) {
-            if (x[i].innerHTML == tipoPeso1[j]) {
-                tipoPeso0 = tipoPeso1[j];
-                postm1 = i;
-                console.log("tipo de envio: " + tipoPeso0);
-                console.log("ubicacion de envio: " + postm1);
-                break
-            } 
-        } 
     }
- } else {
-    tipoPeso0 = "S/Inf";
-    postm1 = null;
- };
+};
 
- // Tipo de unidad de Envio 
- 
+// Tipo de Envio 2da vuelta y medida
+function getTipoEnvByClass (classType){
+    var uniPeso = document.getElementsByClassName(classType)[postm0].nextElementSibling.innerHTML;
+    var i;
+    for (i = 0; i < uniPeso1.length; i++) {
+        if ( uniPeso.search(uniPeso1[i]) !== -1 ) {
+            uniPeso0 = uniPeso1[i];
+            sepDim = uniPeso.search("; ");
+            pesoNum = uniPeso.substring(sepDim + 2, uniPeso.search(uniPeso0)-1);
+            item.medidas.peso = pesoNum;                
+            break
+        }  else {
+            uniMedida0 = "S/Inf";
+        }
+    }
+};
 
- if ( detTipo0 == detTipo1[0] && postm1 != null ) {
-    var uniPeso = document.getElementsByClassName("a-size-base")[postm1].nextElementSibling.innerHTML;
+function getTipoEnvByLi (){
+    var uniPeso = document.getElementsByTagName('li')[postm0].innerText;
+    var i;
+    for (i = 0; i < uniPeso1.length; i++) {
+        if ( uniPeso.search(uniPeso1[i]) !== -1 ) {
+            uniPeso0 = uniPeso1[i];
+            sepDim = uniPeso.search("; ");
+            pesoNum = uniPeso.substring(sepDim + 2, uniPeso.search(uniPeso0)-1);
+            item.medidas.peso = pesoNum;
+            break
+        }  else {
+            uniMedida0 = "S/Inf";
+        }
+    }
+};
+
+// Tipo de unidad de Envio 
+function getPesoByClass (classType){
+    var uniPeso = document.getElementsByClassName(classType)[postm1].nextElementSibling.innerHTML;
 
     var i;
     for (i = 0; i < uniPeso1.length; i++) {
@@ -324,14 +261,14 @@ if ( detTipo0 == detTipo1[0] ) {
             pesoNum = uniPeso.substr(1, uniPeso.indexOf(" ")-1);
             uniPeso0 = uniPeso1[i];
             item.medidas.peso = pesoNum;
-            console.log("peso de envio: " + uniPeso);
             break
         }  else {
             uniPeso0 = "S/Inf";
         }
     }
-} else if ( detTipo0 == detTipo1[1] && postm1 != null ){
+};
 
+function getPesoByLi (){
     var uniPeso = document.getElementsByTagName('li')[postm1].innerText;
 
     var i;
@@ -340,30 +277,66 @@ if ( detTipo0 == detTipo1[0] ) {
             uniPeso0 = uniPeso1[i];
             pesoNum = uniPeso.substring(uniPeso.indexOf(":")+2, uniPeso.search(uniPeso0)-1);
             item.medidas.peso = pesoNum;
-            console.log("peso de envio: " + uniPeso);
             break
         }  else {
             uniPeso0 = "S/Inf";
         }
     }
-} else  if ( detTipo0 == detTipo1[2] && postm1 != null ) {
+};
 
-    var uniPeso = document.getElementsByClassName("a-size-base")[postm1 + 1].innerHTML;
+// Tipo de Detalles del Producto (Med)
+var k;
+for (k = 0; k < detTipo0.length; k++) {
+    if ((detTipo0[k].attr == 0) || (detTipo0[k].attr == 2)) {
+        checkTipoMedByClass ("a-size-base", "tipoMedida");
+    } else if ((detTipo0[k].attr == 1) || (detTipo0[k].attr == 3)) {
+        checkTipoMedByLi("tipoLista","li");
+    } else {
+        tipoMed0 = "S/Inf";
+        postm0 = null;
+    };
+};
 
-    var i;
-    for (i = 0; i < uniPeso1.length; i++) {
-        if ( uniPeso.search(uniPeso1[i]) !== -1 ) {
-            pesoNum = uniPeso.substr(1, uniPeso.indexOf(" ")-1);
-            uniPeso0 = uniPeso1[i];
-            item.medidas.peso = pesoNum;
-            console.log("peso de envio: " + uniPeso);
-            break
-        }  else {
-            uniPeso0 = "S/Inf";
-        }
-    }
+// Tipo de unidad de medida 
+var k;
+for (k = 0; k < detTipo0.length; k++) {
+    if ((detTipo01 == 0) || (detTipo01 == 2)) {
+        getMedNumByClass ("a-size-base");
+    } else if ((detTipo01 == 1) || (detTipo01 == 3)) {
+        getMedNumByLi ();
+    } else {
+        tipoMed0 = "S/Inf";
+        postm0 = null;
+    };
+};
+
+
+// Tipo de unidad de Envio 
+if (postm1 === null) {
+    var k;
+    for (k = 0; k < detTipo0.length; k++) {
+        if ((detTipo01 == 0) || (detTipo01 == 2)) {
+           getTipoEnvByClass ("a-size-base");
+        } else if ((detTipo01 == 1) || (detTipo01 == 3)) {
+           getTipoEnvByLi ();
+        } else {
+            tipoMed0 = "S/Inf";
+            postm0 = null;
+        };
+    };
+
 } else {
-    uniPeso0 = "S/Inf";
+    var k;
+    for (k = 0; k < detTipo0.length; k++) {
+        if ((detTipo01 == 0) || (detTipo01 == 2)) {
+            getPesoByClass ("a-size-base");
+        } else if ((detTipo01 == 1) || (detTipo01 == 3)) {
+            getPesoByLi ();
+        } else {
+            tipoMed0 = "S/Inf";
+            postm0 = null;
+        };
+    };
 };
 
 //--------------------------------------------------------------------------------
@@ -392,11 +365,11 @@ function calculosIniciales(){
  
     // Conversion de peso a libras
 
-    if ( uniPeso0 == uniPeso1[0] || uniPeso0 == uniPeso1[2] || uniPeso0 == uniPeso1[3]) {
+    if ( uniPeso0 == uniPeso1[4] || uniPeso0 == uniPeso1[5] || uniPeso0 == uniPeso1[6] || uniPeso0 == uniPeso1[6]) {
     item.medidas.peso *= 0.0625
-    } else if ( uniPeso0 == uniPeso1[6] || uniPeso0 == uniPeso1[7] ) {
+    } else if ( uniPeso0 == uniPeso1[9] || uniPeso0 == uniPeso1[10] ) {
         item.medidas.peso *= 2.20462
-    }else if ( uniPeso0 == uniPeso1[6] || uniPeso0 == uniPeso1[7] ) {
+    }else if ( uniPeso0 == uniPeso1[11] || uniPeso0 == uniPeso1[12] ) {
         item.medidas.peso *= 0.00220462
     };
 
@@ -435,6 +408,8 @@ function calculosIniciales(){
     
     if (item.medidas.volMetxCant < 10 ) {
         item.costoEnvio.fleteAdicionalSinSB = 0;
+    } else if (item.medidas.pesoxCant < 10 ) {
+        item.costoEnvio.fleteAdicionalSinSB = ((item.medidas.volMetxCant) - 10) * item.costoEnvio.precLibraAdicional;
     } else if (item.medidas.volMetxCant > item.medidas.pesoxCant) {
         item.costoEnvio.fleteAdicionalSinSB = ((item.medidas.volMetxCant) - item.medidas.pesoxCant) * item.costoEnvio.precLibraAdicional;
     } else {
@@ -467,34 +442,7 @@ function calculosIniciales(){
 
     item.costoEnvio.costoEnvFinalConSB = item.costoEnvio.flete*1 + item.costoEnvio.fleteAdicionalConSB*1 + item.costoEnvio.impuesto*1 + item.costoEnvio.seguro*1; 
 
-
-    // Costos ML
-
-    item.costosML.comML = item.precio * 2.2 * 0.18;
-
-    item.costosML.impML = item.precio * 2.2 * 0.04;
-
-    costoFinalBruto = item.costosML.impML*1 + item.costosML.comML*1 + item.costosML.envioInterno*1;
-    item.costosML.costoMLFinal = costoFinalBruto.toFixed(2);
-
-
-    gastosFinales = item.precio*1 + item.costoEnvio.costoEnvFinal*1 + item.costosML.costoMLFinal*1;
-    precioVentaBruto = gastosFinales * 1.2;
-
-    item.costosML.comML = precioVentaBruto * 0.18;
-
-    item.costosML.impML = precioVentaBruto * 0.04;
-
-    gastosFinales = item.precio*1 + item.costoEnvio.costoEnvFinal*1 + item.costosML.costoMLFinal*1;
-    precioVentaBruto = gastosFinales * 1.2;
-
-    item.precVenta = precioVentaBruto.toFixed(2);
-
-    item.ganancia = precioVentaBruto*1 - gastosFinales;
-
 };
 
 calculosIniciales();
 
-resumen2 = "Ganancia: $" + item.ganancia.toFixed(2) + " / Costo Envio: $" + item.costoEnvio.costoEnvFinal;
-    
