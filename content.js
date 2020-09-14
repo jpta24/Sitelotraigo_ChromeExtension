@@ -5,6 +5,7 @@ var item = {
     precioxCant: "",
     prime: "",
     disponibilidad: false,
+    condicionNew: false,
     cantidad: 1,
     medidas: {
         shippingBox: false,
@@ -73,6 +74,8 @@ item.asin = asin
 var disp = $('#availability').text(); 
 
 if (disp.search("In Stock") != -1) {
+    item.disponibilidad = true;
+ }if (disp.search("Disponible") != -1) {
     item.disponibilidad = true;
 }
 
