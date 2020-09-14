@@ -4,7 +4,7 @@ var item = {
     precio: "",
     precioxCant: "",
     prime: "",
-    disponibilidad: "",
+    disponibilidad: false,
     cantidad: 1,
     medidas: {
         shippingBox: false,
@@ -23,7 +23,6 @@ var item = {
         voluMetricoAgrand: "",
         volMetAgrandxCant: "",
         volxCantAgrand: "",
-
     },
     precVenta: "",
     costoEnvio: {
@@ -37,10 +36,13 @@ var item = {
         seguro:  10, 
         costoEnvFinal : "",
         costoEnvFinalConSB: "",
+        daysToDeliver: 7, // 7 dias habiles
         fechaEntrega: "",
     },
 };
 
+
+//-----------------------PRECIO --------------------------
 if( $('body').find('#priceblock_ourprice').length != 0 ) {
     precioTxt = $('#priceblock_ourprice').text();
 } else {
@@ -53,33 +55,28 @@ if (precioTxt != ""){
     item.precio = parseFloat(item.precioBruto.replace(",",""));
 }                
 
+//-----------------------NOMBRE --------------------------
 var nombre = $('#productTitle').text();
 
 item.nombre = nombre;
 
-var asinX = $('.a-size-base'); 
-textoAsinX = "\nASIN\n";
-var i;
-for (i = 0; i < asinX.length; i++) {
-    if (asinX[i].innerHTML == textoAsinX) {
-        asin = asinX[i].nextElementSibling.innerHTML;
-        break
-    } else {
-        asin = "No ASIN"
-    }
-}
+//-----------------------ASIN --------------------------
+
+pagina = window.location.href;
+XasinX = pagina.substr(pagina.search("/dp/")+4,15);
+asin = XasinX.substr(0,XasinX.search("/"))
 
 item.asin = asin
-
-
-
-
 
 //------------------------DISPONIBILIDAD-------------------------
 
 var disp = $('#availability').text(); 
 
-item.disponibilidad = disp;
+if (disp.search("In Stock") != -1) {
+    item.disponibilidad = true;
+}
+
+
 
 postm0 = null;
 postm1 = null;

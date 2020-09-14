@@ -1,4 +1,5 @@
  $(document).ready(function(){
+   
   var msj = {
     action: "",
     item: "",
@@ -49,9 +50,14 @@
     },function(){
       $(this).css("opacity", "1");
     }).click(function(){
-      $("#masInfo").attr("display", "flex");
-      $("#masInfo").slideToggle("slow");
-      });
+      pagina = window.location.href;
+      if (pagina.search(item.asin) == -1){
+        alert("El artículo que desea visualizar ha sido modificado, por favor ACTUALICE la página para poder ver la información del producto correcto.");
+      } else {
+        $("#masInfo").attr("display", "flex");
+        $("#masInfo").slideToggle("slow");
+      }
+    });
       
   $('#information').after("<div id='shoppingCart' class='information'></div>");
 
@@ -60,16 +66,23 @@
     },function(){
       $(this).css("opacity", "1");
     }).click(function(){
-      msj.action = "addItem"
-      msj.item = item;
+      //-----------------------CHECK ASIN --------------------------
+
+      pagina = window.location.href;
+      if (pagina.search(item.asin) == -1){
+        alert("El artículo que desea agregar ha sido modificado, por favor ACTUALICE la página para poder agregar el producto correcto.");
+      } else {
+        msj.action = "addItem"
+        msj.item = item;
+        
+        console.log(listadoProductos);
+        chrome.runtime.sendMessage(msj);
+        
       
-      console.log(listadoProductos);
-      chrome.runtime.sendMessage(msj);
-      
-    
-      if ($("#shoppingCartResGral").attr("display") == undefined || $("#shoppingCartResGral").attr("display") == "none") {
-        mostrarShippingCart();
-      };      
+        if ($("#shoppingCartResGral").attr("display") == undefined || $("#shoppingCartResGral").attr("display") == "none") {
+          mostrarShippingCart();
+        }; 
+      }
     });
 
 
@@ -197,7 +210,7 @@
       $('#tf3').text("$" + item.costoEnvio.costoEnvFinalConSB.toFixed(2));
     }
     //------------------------ FECHA ENTREGA ---------------------
-    var daysToDeliver = 7;
+    var daysToDeliver = item.costoEnvio.daysToDeliver;
     var fecha = new Date();
     
       year = fecha.getFullYear();
@@ -260,6 +273,8 @@
       item.costoEnvio.fechaEntrega = fecha;
 
     $('#fechaEntregaFecha').text(fechaEntrega);
+
+    console.log(item)
   };
 //--------------------------------------------------------------------------------
 
