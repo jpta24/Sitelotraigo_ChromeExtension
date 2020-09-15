@@ -1,53 +1,45 @@
 {
-    "manifest_version": 2, //siempre 2
-    "name": "Prueba Ninja Sales",
-    "version": "1.0",
+	"manifest_version": 2, //siempre 2
+	"name": "Prueba Ninja Sales",
+	"version": "1.0",
 
-    "browser_action" : {
-        "default_popup" : "popup.html"
+	"browser_action": {
+		"default_popup": "popup.html"
+	},
 
-    },
+	"icons": {
+		"16": "img/stlt16.png",
+		"48": "img/stlt50.png"
+	},
 
-    "icons" : {
-        "16" : "img/stlt16.png",
-        "48" : "img/stlt50.png"
-        },
-    
+	"web_accessible_resources": [
+		"img/col.png",
+		"img/ven.png",
+		"img/stlt2.jpg",
+		"img/info.png",
+		"img/SC1.png",
+		"img/noShippingBox.png",
+		"img/ShippingBox.png",
+		"img/mas.png",
+		"img/menos.png",
+		"img/trashcan.png"
+	],
 
-    "web_accessible_resources": [
-            "img/col.png",
-            "img/ven.png",
-            "img/stlt2.jpg",
-            "img/info.png",
-            "img/SC1.png",
-            "img/noShippingBox.png",
-            "img/ShippingBox.png",
-            "img/mas.png",
-            "img/menos.png",   
-            "img/trashcan.png"
-          ],
+	"content_scripts": [
+		{
+			"matches": [
+				"https://www.amazon.com/dp/*",
+				"https://www.amazon.com/*/dp/*"
+			],
 
-    "content_scripts": [
-        {
-            "matches": [
-                "https://www.amazon.com/dp/*",
-                "https://www.amazon.com/*/dp/*"
-            ],
+			"css": ["styles.css"],
 
-            "css": [
-                "styles.css"
-            ],
+			"js": ["jquery-3.5.1.min.js", "content.js", "jquery.js"]
+		}
+	],
 
-            "js": [
-                "jquery-3.5.1.min.js",
-                "content.js",
-                "jquery.js"
-            ]
-        }
-    ],
-
-    "background": {
-        "scripts": ["background.js"],
-        "persistent" : false
-    }
+	"background": {
+		"scripts": ["background.js"],
+		"persistent": false
+	}
 }
